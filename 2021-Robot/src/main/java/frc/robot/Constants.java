@@ -31,7 +31,7 @@ public final class Constants {
         kCANCoderBL(8,"CANCoderBackLeft"),
         kCANCoderBR(9,"CANCoderBackRight"),
         kCANCoderFL(10,"CANCoderFrontLeft"),
-        kCANCoderFR(11,"CANCoderFrontRight"),
+        kCANCoderFR(11,"CANCoderFrontRight");
 
         public final int id;
         public final String name;
