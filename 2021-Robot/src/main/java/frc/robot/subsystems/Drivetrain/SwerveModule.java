@@ -46,7 +46,7 @@ public class SwerveModule extends SubsystemBase {
   }
   
 	public double getModuleAngle(){
-  double currentAngle = encoder.getPosition() * 360;
+  double currentAngle = encoder.getPosition() / 4096 * 360;
   return currentAngle;
   }
 	
@@ -111,9 +111,22 @@ public class SwerveModule extends SubsystemBase {
         setpoint = setpoint - MAX_VOLTS;
     }
 // Applies the setpoint to our PIDController
-    pidController.setSetpoint(setpoint / 360);
+    pidController.setSetpoint(setpoint % 360);
 // Applies the calculated pidOutput using the encoder as a measurementSource
-    angle_motor.set(pidController.calculate(encoder.getPosition()));
+    System.out.println(pidController.calculate(encoder.getPosition() % 360));
+    angle_motor.set(pidController.calculate(encoder.getPosition() % 360));
   }
+
+
+
+  public void simpleDrive(double speed, double angle){
+    speed_motor.set(speed);
+    angle_motor.set(angle);
+  }
+  //public double getAnglePosition(){}
+
+public void resetEncoder() {
+  encoder.setPosition(0);
+}
 }
 

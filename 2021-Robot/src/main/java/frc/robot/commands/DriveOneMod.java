@@ -6,17 +6,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.Drivetrain.SwerveDrive;
+import frc.robot.subsystems.Drivetrain.SwerveModule;
 
-public class Drive extends CommandBase {
-private SwerveDrive swerve;
-double x1;
-double y1;
-double x2;
-  /**
-   * Creates a new Drive.
-   */
-  public Drive(SwerveDrive swerve) {
+public class DriveOneMod extends CommandBase {
+  SwerveModule swerve;
+  double x1, x2;
+  double y1;
+  /** Creates a new DriveOneMod. */
+  public DriveOneMod(SwerveModule swerve) {
     this.swerve = swerve;
     addRequirements(swerve);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -24,24 +21,22 @@ double x2;
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    x1 = RobotContainer.getXLeft();
     y1 = RobotContainer.getYLeft();
+    x1 = RobotContainer.getXLeft();
     x2 = RobotContainer.getXRight();
-    System.out.println(x1 + "   " + y1 + "   " + x2);
-    swerve.driveRoboCentric(x1, y1, x2);
+
+    swerve.simpleDrive(y1, x2);
+    System.out.println(swerve.getModuleAngle());
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    swerve.driveFieldCentric(0, 0, 0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
