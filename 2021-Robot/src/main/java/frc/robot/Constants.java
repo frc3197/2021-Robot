@@ -51,4 +51,23 @@ public final class Constants {
     public static final double W = 25;
     public static final int SWERVE_MAX_VOLTS = 0;
 
+
+
+    public static enum PIDContants {
+        swerveModule("swerveModules",.042,.003,0,0);
+
+        public final String name;
+        public final double p;
+        public final double i;
+        public final double d;
+        public final double f;
+        
+        private PIDContants(String name, double p, double i, double d, double f) {
+            this.name = name;
+            this.p = p;
+            this.i = i;
+            this.d = d;
+            this.f = f;
+        }
+    }
 }
