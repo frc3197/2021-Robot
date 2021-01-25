@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain.SwerveModule;
@@ -27,16 +28,15 @@ public class DriveOneMod extends CommandBase {
   @Override
   public void execute() {
     y1 = RobotContainer.getYLeft();
-    x1 = RobotContainer.getXLeft();
     x2 = RobotContainer.getXRight();
-
-    swerve.simpleDrive(y1, x2);
-    System.out.println(swerve.getModuleAngle());
+    swerve.simpleTurnToAngle(90);
+    SmartDashboard.putNumber("Absolute Position Mod 4", swerve.getModuleAngleAbsolute());
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) 
+  {}
 
   // Returns true when the command should end.
   @Override
