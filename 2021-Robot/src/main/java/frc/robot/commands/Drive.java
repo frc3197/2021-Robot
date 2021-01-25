@@ -33,7 +33,6 @@ double x2;
     x1 = RobotContainer.getXLeft();
     y1 = RobotContainer.getYLeft();
     x2 = RobotContainer.getXRight();
-    System.out.println(x1 + "   " + y1 + "   " + x2);
     swerve.driveRoboCentric(x1, y1, x2);
   }
 

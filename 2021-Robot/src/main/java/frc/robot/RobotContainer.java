@@ -50,15 +50,30 @@ public class RobotContainer {
   }
 
   public static double getXLeft() {
-    return driver1.getX(Hand.kLeft);
+    double input = driver1.getX(Hand.kLeft);
+    if(input < .075 && input > -.075){
+      return 0;
+    }
+    else{
+    return input;}
   }
 
   public static double getYLeft() {
-    return driver1.getY(Hand.kLeft);
+    double input = driver1.getY(Hand.kLeft);
+    if(input < .075 && input > -.075){
+      return 0;
+    }
+    else{
+    return input;}
   }
 
   public static double getXRight() {
-    return driver1.getX(Hand.kRight);
+    double input = driver1.getX(Hand.kRight);
+    if(input < .075 && input > -.075){
+      return 0;
+    }
+    else{
+    return input;}
   }
 
   /*
