@@ -5,10 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-import org.photonvision.PhotonCamera;
+
 
  
 public class Robot extends TimedRobot {
@@ -24,7 +25,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-    PhotonCamera camera = new PhotonCamera("intakeCam");
+
 
   }
 
@@ -41,6 +42,14 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
+    SmartDashboard.putNumber("Intake Offset (px)", m_robotContainer.intake.getYaw());
+    if(m_robotContainer.shooter.hasTargets()){
+      SmartDashboard.putNumber("Shooter X Offset (deg)", m_robotContainer.shooter.getXOffset());
+      SmartDashboard.putNumber("Shooter Y Offset (deg)", m_robotContainer.shooter.getYOffset());
+    }
+
+
+
     CommandScheduler.getInstance().run();
   }
 
