@@ -8,6 +8,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.SerialPort.Port;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -156,12 +157,13 @@ if(max>1){
 
     // Calculations for wheel angles
     double frontRightAngle = Math.atan2(b, c) * 180 / Math.PI;
-
+    SmartDashboard.putNumber("frontRightAngle", frontRightAngle);
     double frontLeftAngle = Math.atan2(b, d) * 180 / Math.PI;
-
+    SmartDashboard.putNumber("frontLeftAngle", frontLeftAngle);
     double backLeftAngle = Math.atan2(a, d) * 180 / Math.PI;
-
+    SmartDashboard.putNumber("backLeftAngle", backLeftAngle);
     double backRightAngle = Math.atan2(a, c) * 180 / Math.PI;
+    SmartDashboard.putNumber("backRightAngle", backRightAngle);
 /*
     System.out.println(frontRightAngle + " - frontRightAngle");
     System.out.println(frontRightSpeed + " - frontRightSpeed");
