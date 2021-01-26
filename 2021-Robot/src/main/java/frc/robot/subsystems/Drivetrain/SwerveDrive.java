@@ -154,6 +154,8 @@ if(max>1){
       
     } else{
       isInverted = false;
+      backRight.getSpeedMotor().setInverted(isInverted);
+      frontRight.getSpeedMotor().setInverted(isInverted);
     }
 
     if(d <= 0){
@@ -163,6 +165,8 @@ if(max>1){
       frontLeft.getSpeedMotor().setInverted(isInverted);
     }else{
       isInverted = false;
+      backLeft.getSpeedMotor().setInverted(isInverted);
+      frontLeft.getSpeedMotor().setInverted(isInverted);
     }
 
     SmartDashboard.putNumber("a", a);
