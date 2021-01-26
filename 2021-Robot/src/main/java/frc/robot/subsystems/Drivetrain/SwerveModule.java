@@ -4,11 +4,13 @@
 
 package frc.robot.subsystems.Drivetrain;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class SwerveModule extends SubsystemBase {
 
@@ -35,9 +37,14 @@ public class SwerveModule extends SubsystemBase {
     encoder = new CANCoder(encoderID);
 
     pidController = new PIDController(0, 0, 0);
+    pidController = new PIDController(Constants.PIDContants.swerveModule.p, Constants.PIDContants.swerveModule.i, Constants.PIDContants.swerveModule.d);
     MAX_VOLTS = maxVoltage;
     
 
+    pidController.setTolerance(5);
+    speed_motor.configOpenloopRamp(.25);
+    angle_motor.setNeutralMode(NeutralMode.Brake);
+    speed_motor.setNeutralMode(NeutralMode.Brake);
   }
 
   @Override
@@ -45,10 +52,20 @@ public class SwerveModule extends SubsystemBase {
     // This method will be called once per scheduler run
   }
   
-	public double getModuleAngle(){
-  double currentAngle = encoder.getPosition() / 4096 * 360;
+	public double getModuleAngleAbsolute(){
+  double currentAngle = encoder.getAbsolutePosition();
   return currentAngle;
   }
+
+
+  // Absolute useless garbage
+
+	public double getModuleAngle(){
+    double currentAngle = encoder.getPosition() % 360;
+    return currentAngle;
+    }
+
+
 	
   public void turnToAngle(double targetAngle){
  	// mLastTargetAngle = targetAngle;
@@ -113,8 +130,7 @@ public class SwerveModule extends SubsystemBase {
 // Applies the setpoint to our PIDController
     pidController.setSetpoint(setpoint % 360);
 // Applies the calculated pidOutput using the encoder as a measurementSource
-    System.out.println(pidController.calculate(encoder.getPosition() % 360));
-    angle_motor.set(pidController.calculate(encoder.getPosition() % 360));
+  angle_motor.set(pidController.calculate(getModuleAngleAbsolute(), angle) * .2);
   }
 
 
@@ -128,5 +144,9 @@ public class SwerveModule extends SubsystemBase {
 public void resetEncoder() {
   encoder.setPosition(0);
 }
+
+  public void simpleTurnToAngle(double targetAngle){
+    angle_motor.set(pidController.calculate(getModuleAngle(), targetAngle) * .2);
+  }
 }
 
