@@ -146,6 +146,16 @@ if(max>1){
     double c = y1 - x2 * (W / r);
     double d = y1 + x2 * (W / r);
 
+    if(c == -0){
+      c = 0;
+    }
+
+    SmartDashboard.putNumber("a", a);
+    SmartDashboard.putNumber("b", b);
+    SmartDashboard.putNumber("c", c);
+    SmartDashboard.putNumber("d", d);
+
+
     // Calculations for wheel speeds
     double frontRightSpeed = Math.sqrt((b * b) + (c * c));
 
