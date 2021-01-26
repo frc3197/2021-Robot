@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain.SwerveDrive;
@@ -33,6 +34,9 @@ double x2;
     x1 = RobotContainer.getXLeft();
     y1 = RobotContainer.getYLeft();
     x2 = RobotContainer.getXRight();
+    SmartDashboard.putNumber("X left", x1);
+    SmartDashboard.putNumber("Y Left", y1);
+    SmartDashboard.putNumber("X Right", x2);
     swerve.driveRoboCentric(x1, y1, x2);
   }
 
