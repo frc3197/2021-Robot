@@ -42,7 +42,6 @@ public class SwerveModule extends SubsystemBase {
     
 
     pidController.setTolerance(5);
-    speed_motor.configOpenloopRamp(.25);
     angle_motor.setNeutralMode(NeutralMode.Brake);
     speed_motor.setNeutralMode(NeutralMode.Brake);
   }
@@ -68,31 +67,19 @@ public class SwerveModule extends SubsystemBase {
 
 	
   public void turnToAngle(double targetAngle){
- 	// mLastTargetAngle = targetAngle;
-	targetAngle %= 360;
-	targetAngle += mZeroOffset;
-	double currentAngle = encoder.getPosition() * 360;
-	double currentAngleMod = currentAngle % 360;
-	if (currentAngleMod < 0) currentAngleMod += 360;
+    double currentAngle = encoder.getAbsolutePosition();
+ 		double delta = currentAngle - targetAngle;
+ 		if (delta > 90 || delta < -90) {
+ 			if (delta > 90)
+ 				targetAngle += 180;
+ 			else if (delta < -90){
+ 				targetAngle -= 180;
+ 			speed_motor.setInverted(false);
+ 		} else {
+ 			speed_motor.setInverted(true);
+ 		}}
 	  
-	double delta = currentAngleMod - targetAngle;
-		if (delta > 180) {
-			targetAngle += 360;
-		} else if (delta < -180) {
-			targetAngle -= 360;
-		}
-// 		delta = currentAngleMod - targetAngle;
-// 		if (delta > 90 || delta < -90) {
-// 			if (delta > 90)
-// 				targetAngle += 180;
-// 			else if (delta < -90)
-// 				targetAngle -= 180;
-// 			mDriveMotor.setInverted(false);
-// 		} else {
-// 			mDriveMotor.setInverted(true);
-// 		}
-	  
-		targetAngle += currentAngle - currentAngleMod;
+		 // targetAngle += currentAngle - currentAngleMod;
     // ALL OF THIS STUFF IS FOR DEALING WITH STALLING, SHOULD DISECT LATER 
 		// double currentError = angleMotor.getError();
 		// if (Math.abs(currentError - mLastError) < 7.5 &&
@@ -108,7 +95,6 @@ public class SwerveModule extends SubsystemBase {
 		// mLastError = currentError;
 
 
-		targetAngle /=  360.0;
 		pidController.setSetpoint(targetAngle);
 	}
   
@@ -120,15 +106,7 @@ public class SwerveModule extends SubsystemBase {
 // Sets the motor to the speed passed in, will be the wheelSpeeds calculated in the SwerveDriveSubsystem	  
     speed_motor.set(speed);
 // Calculates the setpoint measurement
-    double setpoint = angle * (MAX_VOLTS * 0.5) + (MAX_VOLTS * 0.5); // Optimization offset can be calculated here.
-    if (setpoint < 0) {
-        setpoint = MAX_VOLTS + setpoint;
-    }
-    if (setpoint > MAX_VOLTS) {
-        setpoint = setpoint - MAX_VOLTS;
-    }
-// Applies the setpoint to our PIDController
-    pidController.setSetpoint(setpoint % 360);
+    turnToAngle(angle);
 // Applies the calculated pidOutput using the encoder as a measurementSource
   angle_motor.set(pidController.calculate(getModuleAngleAbsolute(), angle) * .2);
   }
@@ -146,7 +124,7 @@ public void resetEncoder() {
 }
 
   public void simpleTurnToAngle(double targetAngle){
-    angle_motor.set(pidController.calculate(getModuleAngle(), targetAngle) * .2);
+    angle_motor.set(pidController.calculate(getModuleAngle() * .2));
   }
 }
 
