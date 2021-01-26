@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Drive;
 import frc.robot.commands.DriveOneMod;
 import frc.robot.commands.SwerveToAngle;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Drivetrain.SwerveDrive;
 import frc.robot.subsystems.Drivetrain.SwerveModule;
 
@@ -35,6 +37,10 @@ public class RobotContainer {
       Constants.TalonID.kSwerveFRSpeed.id, Constants.CANDevices.kCANCoderFR.id, Constants.SWERVE_MAX_VOLTS);
 
   public static SwerveDrive swerveDrive = new SwerveDrive(backRight, backLeft, frontRight, frontLeft);
+
+  public static Intake intake = new Intake();
+
+  public static Shooter shooter = new Shooter();
 
   public RobotContainer() {
     swerveDrive.setDefaultCommand(new Drive(swerveDrive));
