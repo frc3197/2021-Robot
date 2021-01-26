@@ -123,6 +123,11 @@ public void resetEncoder() {
   encoder.setPosition(0);
 }
 
+
+public WPI_TalonFX getSpeedMotor(){
+  return speed_motor;
+}
+
   public void simpleTurnToAngle(double targetAngle){
     angle_motor.set(pidController.calculate(getModuleAngle() * .2));
   }

@@ -140,14 +140,29 @@ if(max>1){
 
     double r = Math.sqrt((L * L) + (W * W));
     y1 *= -1;
-
+    boolean isInverted = false;
     double a = x1 - x2 * (L / r);
     double b = x1 + x2 * (L / r);
     double c = y1 - x2 * (W / r);
     double d = y1 + x2 * (W / r);
 
-    if(c == -0){
-      c = 0;
+    if(c <= 0){
+      isInverted = true;
+      c = Math.abs(c);
+      backRight.getSpeedMotor().setInverted(isInverted);
+      frontRight.getSpeedMotor().setInverted(isInverted);
+      
+    } else{
+      isInverted = false;
+    }
+
+    if(d <= 0){
+      isInverted = true;
+      d = Math.abs(d);
+      backLeft.getSpeedMotor().setInverted(isInverted);
+      frontLeft.getSpeedMotor().setInverted(isInverted);
+    }else{
+      isInverted = false;
     }
 
     SmartDashboard.putNumber("a", a);
