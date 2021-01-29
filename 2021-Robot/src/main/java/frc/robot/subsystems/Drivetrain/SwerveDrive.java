@@ -218,9 +218,9 @@ double max = frontRightSpeed;
       backRightSpeed/=max;
     } 
 
-    backRight.drive(backRightSpeed, backRightAngle);
+    backRight.drive(-backRightSpeed, backRightAngle);
     backLeft.drive(backLeftSpeed, backLeftAngle);
-    frontRight.drive(frontRightSpeed, frontRightAngle);
+    frontRight.drive(-frontRightSpeed, frontRightAngle);
     frontLeft.drive(frontLeftSpeed, frontLeftAngle);
   }
 }

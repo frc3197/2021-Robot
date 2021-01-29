@@ -31,12 +31,11 @@ public class SwerveModule extends SubsystemBase {
   /**
    * Creates a new WheelDrive.
    */
-  public SwerveModule(int angleMotor, int speedMotor, int encoderID, int maxVoltage) {
+  public SwerveModule(int angleMotor, int speedMotor, int encoderID, int maxVoltage, boolean isInverted) {
     angle_motor = new WPI_TalonFX(angleMotor);
     speed_motor = new WPI_TalonFX(speedMotor);
     encoder = new CANCoder(encoderID);
 
-    pidController = new PIDController(0, 0, 0);
     pidController = new PIDController(Constants.PIDContants.swerveModule.p, Constants.PIDContants.swerveModule.i, Constants.PIDContants.swerveModule.d);
     MAX_VOLTS = maxVoltage;
     
@@ -44,6 +43,11 @@ public class SwerveModule extends SubsystemBase {
     pidController.setTolerance(5);
     angle_motor.setNeutralMode(NeutralMode.Brake);
     speed_motor.setNeutralMode(NeutralMode.Brake);
+
+    speed_motor.setInverted(isInverted);
+
+    speed_motor.configOpenloopRamp(0.25);
+    angle_motor.configOpenloopRamp(.05);
   }
 
   @Override
