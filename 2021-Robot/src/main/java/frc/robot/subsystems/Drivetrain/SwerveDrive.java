@@ -135,7 +135,7 @@ if(max>1){
   }
 
   public void driveRoboCentric(double x1, double y1, double x2) {
-    // Same as FeildCentric without the inclusion of the gyro heading to alter
+    // Same as FieldCentric without the inclusion of the gyro heading to alter
     // inputs
 
     double r = Math.sqrt((L * L) + (W * W));
@@ -173,6 +173,7 @@ if(max>1){
     SmartDashboard.putNumber("b", b);
     SmartDashboard.putNumber("c", c);
     SmartDashboard.putNumber("d", d);
+    SmartDashboard.putBoolean("IsInverted", isInverted);
 
 
     // Calculations for wheel speeds
@@ -184,14 +185,19 @@ if(max>1){
 
     double backRightSpeed = Math.sqrt((a * a) + (c * c));
 
+    int mult = 1;
+    if(y1 > 0 && x1 != 0){
+      mult = -1;
+    }
+
     // Calculations for wheel angles
-    double frontRightAngle = Math.atan2(b, c) * 180 / Math.PI;
+    double frontRightAngle = mult * Math.atan2(b, c) * 180 / Math.PI;
     SmartDashboard.putNumber("frontRightAngle", frontRightAngle);
-    double frontLeftAngle = Math.atan2(b, d) * 180 / Math.PI;
+    double frontLeftAngle = mult * Math.atan2(b, d) * 180 / Math.PI;
     SmartDashboard.putNumber("frontLeftAngle", frontLeftAngle);
-    double backLeftAngle = Math.atan2(a, d) * 180 / Math.PI;
+    double backLeftAngle = mult * Math.atan2(a, d) * 180 / Math.PI;
     SmartDashboard.putNumber("backLeftAngle", backLeftAngle);
-    double backRightAngle = Math.atan2(a, c) * 180 / Math.PI;
+    double backRightAngle = mult * Math.atan2(a, c) * 180 / Math.PI;
     SmartDashboard.putNumber("backRightAngle", backRightAngle);
 /*
     System.out.println(frontRightAngle + " - frontRightAngle");

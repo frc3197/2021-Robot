@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,7 +20,7 @@ import frc.robot.subsystems.Drivetrain.SwerveModule;
 
 public class RobotContainer {
 
-  private static XboxController driver1 = new XboxController(0);
+  private static Joystick driver1 = new Joystick(0);
 
   private JoystickButton driver1A = new JoystickButton(driver1, 1);
   private JoystickButton driver1X = new JoystickButton(driver1, 2);
@@ -44,6 +45,11 @@ public class RobotContainer {
 
   public RobotContainer() {
     swerveDrive.setDefaultCommand(new Drive(swerveDrive));
+
+    driver1.setXChannel(0);
+    driver1.setYChannel(1);
+    driver1.setZChannel(2);
+
     configureButtonBindings();
   }
 
@@ -56,7 +62,7 @@ public class RobotContainer {
   }
 
   public static double getXLeft() {
-    double input = driver1.getX(Hand.kLeft);
+    double input = driver1.getX();
     if(input < .075 && input > -.075){
       return 0;
     }
@@ -65,7 +71,7 @@ public class RobotContainer {
   }
 
   public static double getYLeft() {
-    double input = driver1.getY(Hand.kLeft);
+    double input = driver1.getY();
     if(input < .075 && input > -.075){
       return 0;
     }
@@ -74,7 +80,7 @@ public class RobotContainer {
   }
 
   public static double getXRight() {
-    double input = driver1.getX(Hand.kRight);
+    double input = driver1.getZ();
     if(input < .075 && input > -.075){
       return 0;
     }
