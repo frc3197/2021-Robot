@@ -30,7 +30,7 @@ public class SwerveDrive extends SubsystemBase {
   //
   private double gyroHeading;
   public static ADXRS450_Gyro gyro = new ADXRS450_Gyro();
-   //public static AHRS gyro = new AHRS(Port.kUSB);
+  // public static AHRS gyro = new AHRS(Port.kUSB);
 
   public SwerveDrive(SwerveModule backRight, SwerveModule backLeft, SwerveModule frontRight, SwerveModule frontLeft) {
     this.backRight = backRight;
@@ -43,6 +43,7 @@ public class SwerveDrive extends SubsystemBase {
   public void periodic() {
     // Updates our gyro heading value periodically
     gyroHeading = getHeadingRadians();
+    SmartDashboard.putNumber("Gyro Heading", Units.radiansToDegrees(gyroHeading));
 
   }
 
@@ -56,13 +57,15 @@ public class SwerveDrive extends SubsystemBase {
     // The heading is the gyroAngle but when it hits 360 it goes back to zero.
 
     double heading = getGyroAngle() % 360;
+
     return heading;
   }
 
-  public double getHeadingRadians(){
+  public double getHeadingRadians() {
     double heading = Units.degreesToRadians(getGyroAngle() % 360);
     return heading;
   }
+
   public void driveFieldCentric(double x1, double y1, double x2) {
     // x1 is the x-axis of the left joystick used for strafing
     // y1 is the y-axis of the left joystick used for driving forward and backward
@@ -76,6 +79,8 @@ public class SwerveDrive extends SubsystemBase {
 
     y1 = temp;
 
+    SmartDashboard.putNumber("X1 After Calc", x1);
+    SmartDashboard.putNumber("Y1 After Calc", -y1);
     double r = Math.sqrt((L * L) + (W * W));
     y1 *= -1;
     // Defines A,B,C,D for use in WheelSpeeds and WheelAngle Calculations
@@ -85,7 +90,7 @@ public class SwerveDrive extends SubsystemBase {
     double d = y1 + x2 * (W / r);
 
     int mult = 1;
-    if(y1 > 0 && x1 != 0){
+    if (y1 > 0 && x1 != 0) {
       mult = -1;
     }
     // Calculations for wheel speeds
@@ -100,7 +105,7 @@ public class SwerveDrive extends SubsystemBase {
     // Calculations for wheel angles
     double frontRightAngle = mult * Math.atan2(b, c) / Math.PI;
 
-    double frontLeftAngle = mult *  Math.atan2(b, d) / Math.PI;
+    double frontLeftAngle = mult * Math.atan2(b, d) / Math.PI;
 
     double backLeftAngle = mult * Math.atan2(a, d) / Math.PI;
 
@@ -117,17 +122,22 @@ public class SwerveDrive extends SubsystemBase {
     // Calls the drive function of the 4 modules and feeds in the WheelSpeeds and
     // WheelAngles
 
-    
-double max = frontRightSpeed;
-if(frontLeftSpeed > max ){max = frontLeftSpeed;}
-if(backLeftSpeed > max ){max = backLeftSpeed;} 
-if(backRightSpeed > max){max=backRightSpeed;}
-if(max>1){
-  frontRightSpeed/=max;
-  frontLeftSpeed/=max;
-  backLeftSpeed/=max;
-  backRightSpeed/=max;
-} 
+    double max = frontRightSpeed;
+    if (frontLeftSpeed > max) {
+      max = frontLeftSpeed;
+    }
+    if (backLeftSpeed > max) {
+      max = backLeftSpeed;
+    }
+    if (backRightSpeed > max) {
+      max = backRightSpeed;
+    }
+    if (max > 1) {
+      frontRightSpeed /= max;
+      frontLeftSpeed /= max;
+      backLeftSpeed /= max;
+      backRightSpeed /= max;
+    }
 
     backRight.drive(backRightSpeed, backRightAngle);
     backLeft.drive(backLeftSpeed, backLeftAngle);
@@ -143,7 +153,7 @@ if(max>1){
     frontRight.turnToAngle(angle);
   }
 
-  public void resetEncoders(){
+  public void resetEncoders() {
     backRight.resetEncoder();
     backLeft.resetEncoder();
     frontLeft.resetEncoder();
@@ -159,7 +169,6 @@ if(max>1){
 
     y1 = temp;
 
-    
     double r = Math.sqrt((L * L) + (W * W));
     y1 *= -1;
     boolean isInverted = false;
@@ -168,24 +177,24 @@ if(max>1){
     double c = y1 - x2 * (W / r);
     double d = y1 + x2 * (W / r);
 
-    if(c <= 0){
+    if (c <= 0) {
       isInverted = true;
       c = Math.abs(c);
       backRight.getSpeedMotor().setInverted(isInverted);
       frontRight.getSpeedMotor().setInverted(isInverted);
-      
-    } else{
+
+    } else {
       isInverted = false;
       backRight.getSpeedMotor().setInverted(isInverted);
       frontRight.getSpeedMotor().setInverted(isInverted);
     }
 
-    if(d <= 0){
+    if (d <= 0) {
       isInverted = true;
       d = Math.abs(d);
       backLeft.getSpeedMotor().setInverted(isInverted);
       frontLeft.getSpeedMotor().setInverted(isInverted);
-    }else{
+    } else {
       isInverted = false;
       backLeft.getSpeedMotor().setInverted(isInverted);
       frontLeft.getSpeedMotor().setInverted(isInverted);
@@ -198,7 +207,6 @@ if(max>1){
     SmartDashboard.putNumber("Gyro", getHeading());
     SmartDashboard.putBoolean("IsInverted", isInverted);
 
-
     // Calculations for wheel speeds
     double frontRightSpeed = Math.sqrt((b * b) + (c * c));
 
@@ -209,7 +217,7 @@ if(max>1){
     double backRightSpeed = Math.sqrt((a * a) + (c * c));
 
     int mult = 1;
-    if(y1 > 0 && x1 != 0){
+    if (y1 > 0 && x1 != 0) {
       mult = -1;
     }
 
@@ -222,30 +230,36 @@ if(max>1){
     SmartDashboard.putNumber("backLeftAngle", backLeftAngle);
     double backRightAngle = mult * Math.atan2(a, c) * 180 / Math.PI;
     SmartDashboard.putNumber("backRightAngle", backRightAngle);
-/*
-    System.out.println(frontRightAngle + " - frontRightAngle");
-    System.out.println(frontRightSpeed + " - frontRightSpeed");
-
-    System.out.println(frontLeftAngle + " - frontLeftAngle");
-    System.out.println(frontLeftSpeed + " - frontLeftSpeed");
-
-    System.out.println(backRightAngle + " - backRightAngle");
-    System.out.println(backRightSpeed + " - backRightSpeed");
-
-    System.out.println(backLeftAngle + " - backLeftAngle");
-    System.out.println(backLeftSpeed + " - backLeftSpeed");
-
-*/
-double max = frontRightSpeed;
-    if(frontLeftSpeed > max ){max = frontLeftSpeed;}
-    if(backLeftSpeed > max ){max = backLeftSpeed;} 
-    if(backRightSpeed > max){max=backRightSpeed;}
-    if(max>1){
-      frontRightSpeed/=max;
-      frontLeftSpeed/=max;
-      backLeftSpeed/=max;
-      backRightSpeed/=max;
-    } 
+    /*
+     * System.out.println(frontRightAngle + " - frontRightAngle");
+     * System.out.println(frontRightSpeed + " - frontRightSpeed");
+     * 
+     * System.out.println(frontLeftAngle + " - frontLeftAngle");
+     * System.out.println(frontLeftSpeed + " - frontLeftSpeed");
+     * 
+     * System.out.println(backRightAngle + " - backRightAngle");
+     * System.out.println(backRightSpeed + " - backRightSpeed");
+     * 
+     * System.out.println(backLeftAngle + " - backLeftAngle");
+     * System.out.println(backLeftSpeed + " - backLeftSpeed");
+     * 
+     */
+    double max = frontRightSpeed;
+    if (frontLeftSpeed > max) {
+      max = frontLeftSpeed;
+    }
+    if (backLeftSpeed > max) {
+      max = backLeftSpeed;
+    }
+    if (backRightSpeed > max) {
+      max = backRightSpeed;
+    }
+    if (max > 1) {
+      frontRightSpeed /= max;
+      frontLeftSpeed /= max;
+      backLeftSpeed /= max;
+      backRightSpeed /= max;
+    }
 
     backRight.drive(-backRightSpeed, backRightAngle);
     backLeft.drive(backLeftSpeed, backLeftAngle);
@@ -253,6 +267,7 @@ double max = frontRightSpeed;
     frontLeft.drive(frontLeftSpeed, frontLeftAngle);
   }
 
-public void resetGyro(){
-  gyro.reset();
-}}
+  public void resetGyro() {
+    gyro.reset();
+  }
+}
