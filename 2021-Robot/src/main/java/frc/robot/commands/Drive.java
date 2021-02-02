@@ -10,10 +10,11 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain.SwerveDrive;
 
 public class Drive extends CommandBase {
-private SwerveDrive swerve;
-double x1;
-double y1;
-double x2;
+  private SwerveDrive swerve;
+  double x1;
+  double y1;
+  double x2;
+
   /**
    * Creates a new Drive.
    */
@@ -34,9 +35,7 @@ double x2;
     x1 = RobotContainer.getXLeft();
     y1 = RobotContainer.getYLeft();
     x2 = RobotContainer.getXRight();
-    SmartDashboard.putNumber("X left", x1);
-    SmartDashboard.putNumber("Y Left", y1);
-    SmartDashboard.putNumber("X Right", x2);
+
     swerve.driveRoboCentric(x1, y1, x2);
   }
 

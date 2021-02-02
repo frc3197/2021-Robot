@@ -29,8 +29,8 @@ public class SwerveDrive extends SubsystemBase {
   private double W = Constants.W;
   //
   private double gyroHeading;
-  public static ADXRS450_Gyro gyro = new ADXRS450_Gyro();
-  // public static AHRS gyro = new AHRS(Port.kUSB);
+  // public static ADXRS450_Gyro gyro = new ADXRS450_Gyro();
+  public static AHRS gyro = new AHRS(Port.kUSB);
 
   public SwerveDrive(SwerveModule backRight, SwerveModule backLeft, SwerveModule frontRight, SwerveModule frontLeft) {
     this.backRight = backRight;
@@ -43,7 +43,6 @@ public class SwerveDrive extends SubsystemBase {
   public void periodic() {
     // Updates our gyro heading value periodically
     gyroHeading = getHeadingRadians();
-    SmartDashboard.putNumber("Gyro Heading", Units.radiansToDegrees(gyroHeading));
 
   }
 
@@ -79,8 +78,6 @@ public class SwerveDrive extends SubsystemBase {
 
     y1 = temp;
 
-    SmartDashboard.putNumber("X1 After Calc", x1);
-    SmartDashboard.putNumber("Y1 After Calc", -y1);
     double r = Math.sqrt((L * L) + (W * W));
     y1 *= -1;
     // Defines A,B,C,D for use in WheelSpeeds and WheelAngle Calculations
@@ -165,7 +162,7 @@ public class SwerveDrive extends SubsystemBase {
     // inputs
     double temp = y1 * Math.cos(gyroHeading) + x1 * Math.sin(gyroHeading);
 
-    x1 = -y1 * Math.sin(gyroHeading) + x1 * Math.cos(gyroHeading);
+    x1 = -0.5 * -y1 * Math.sin(gyroHeading) + x1 * Math.cos(gyroHeading);
 
     y1 = temp;
 
@@ -200,13 +197,6 @@ public class SwerveDrive extends SubsystemBase {
       frontLeft.getSpeedMotor().setInverted(isInverted);
     }
 
-    SmartDashboard.putNumber("a", a);
-    SmartDashboard.putNumber("b", b);
-    SmartDashboard.putNumber("c", c);
-    SmartDashboard.putNumber("d", d);
-    SmartDashboard.putNumber("Gyro", getHeading());
-    SmartDashboard.putBoolean("IsInverted", isInverted);
-
     // Calculations for wheel speeds
     double frontRightSpeed = Math.sqrt((b * b) + (c * c));
 
@@ -223,27 +213,10 @@ public class SwerveDrive extends SubsystemBase {
 
     // Calculations for wheel angles
     double frontRightAngle = mult * Math.atan2(b, c) * 180 / Math.PI;
-    SmartDashboard.putNumber("frontRightAngle", frontRightAngle);
     double frontLeftAngle = mult * Math.atan2(b, d) * 180 / Math.PI;
-    SmartDashboard.putNumber("frontLeftAngle", frontLeftAngle);
     double backLeftAngle = mult * Math.atan2(a, d) * 180 / Math.PI;
-    SmartDashboard.putNumber("backLeftAngle", backLeftAngle);
     double backRightAngle = mult * Math.atan2(a, c) * 180 / Math.PI;
-    SmartDashboard.putNumber("backRightAngle", backRightAngle);
-    /*
-     * System.out.println(frontRightAngle + " - frontRightAngle");
-     * System.out.println(frontRightSpeed + " - frontRightSpeed");
-     * 
-     * System.out.println(frontLeftAngle + " - frontLeftAngle");
-     * System.out.println(frontLeftSpeed + " - frontLeftSpeed");
-     * 
-     * System.out.println(backRightAngle + " - backRightAngle");
-     * System.out.println(backRightSpeed + " - backRightSpeed");
-     * 
-     * System.out.println(backLeftAngle + " - backLeftAngle");
-     * System.out.println(backLeftSpeed + " - backLeftSpeed");
-     * 
-     */
+
     double max = frontRightSpeed;
     if (frontLeftSpeed > max) {
       max = frontLeftSpeed;
