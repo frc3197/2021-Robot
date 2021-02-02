@@ -7,8 +7,12 @@ package frc.robot.subsystems.Drivetrain;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.SerialPort.Port;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -26,7 +30,7 @@ public class SwerveDrive extends SubsystemBase {
   //
   private double gyroHeading;
   public static ADXRS450_Gyro gyro = new ADXRS450_Gyro();
-  // public static AHRS gyro = new AHRS(Port.kUSB);
+   //public static AHRS gyro = new AHRS(Port.kUSB);
 
   public SwerveDrive(SwerveModule backRight, SwerveModule backLeft, SwerveModule frontRight, SwerveModule frontLeft) {
     this.backRight = backRight;
@@ -38,19 +42,27 @@ public class SwerveDrive extends SubsystemBase {
   @Override
   public void periodic() {
     // Updates our gyro heading value periodically
-    gyroHeading = getHeading();
+    gyroHeading = getHeadingRadians();
+
   }
 
   public double getGyroAngle() {
-    return gyro.getAngle();
+    // 720,000 is just 360 multiplied by 2000
+    // help
+    return gyro.getAngle() + 72000;
   }
 
   public double getHeading() {
     // The heading is the gyroAngle but when it hits 360 it goes back to zero.
+
     double heading = getGyroAngle() % 360;
     return heading;
   }
 
+  public double getHeadingRadians(){
+    double heading = Units.degreesToRadians(getGyroAngle() % 360);
+    return heading;
+  }
   public void driveFieldCentric(double x1, double y1, double x2) {
     // x1 is the x-axis of the left joystick used for strafing
     // y1 is the y-axis of the left joystick used for driving forward and backward
@@ -72,6 +84,10 @@ public class SwerveDrive extends SubsystemBase {
     double c = y1 - x2 * (W / r);
     double d = y1 + x2 * (W / r);
 
+    int mult = 1;
+    if(y1 > 0 && x1 != 0){
+      mult = -1;
+    }
     // Calculations for wheel speeds
     double frontRightSpeed = Math.sqrt((b * b) + (c * c));
 
@@ -82,13 +98,13 @@ public class SwerveDrive extends SubsystemBase {
     double backRightSpeed = Math.sqrt((a * a) + (c * c));
 
     // Calculations for wheel angles
-    double frontRightAngle = Math.atan2(b, c) / Math.PI;
+    double frontRightAngle = mult * Math.atan2(b, c) / Math.PI;
 
-    double frontLeftAngle = Math.atan2(b, d) / Math.PI;
+    double frontLeftAngle = mult *  Math.atan2(b, d) / Math.PI;
 
-    double backLeftAngle = Math.atan2(a, d) / Math.PI;
+    double backLeftAngle = mult * Math.atan2(a, d) / Math.PI;
 
-    double backRightAngle = Math.atan2(a, c) / Math.PI;
+    double backRightAngle = mult * Math.atan2(a, c) / Math.PI;
 
     /*
      * // This is to normalized wheel speeds to a range of 0 to 1. double max =
@@ -137,7 +153,13 @@ if(max>1){
   public void driveRoboCentric(double x1, double y1, double x2) {
     // Same as FieldCentric without the inclusion of the gyro heading to alter
     // inputs
+    double temp = y1 * Math.cos(gyroHeading) + x1 * Math.sin(gyroHeading);
 
+    x1 = -y1 * Math.sin(gyroHeading) + x1 * Math.cos(gyroHeading);
+
+    y1 = temp;
+
+    
     double r = Math.sqrt((L * L) + (W * W));
     y1 *= -1;
     boolean isInverted = false;
@@ -173,6 +195,7 @@ if(max>1){
     SmartDashboard.putNumber("b", b);
     SmartDashboard.putNumber("c", c);
     SmartDashboard.putNumber("d", d);
+    SmartDashboard.putNumber("Gyro", getHeading());
     SmartDashboard.putBoolean("IsInverted", isInverted);
 
 
@@ -229,4 +252,7 @@ double max = frontRightSpeed;
     frontRight.drive(-frontRightSpeed, frontRightAngle);
     frontLeft.drive(frontLeftSpeed, frontLeftAngle);
   }
-}
+
+public void resetGyro(){
+  gyro.reset();
+}}
