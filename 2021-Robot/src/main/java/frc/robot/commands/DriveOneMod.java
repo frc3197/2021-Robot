@@ -13,6 +13,7 @@ public class DriveOneMod extends CommandBase {
   SwerveModule swerve;
   double x1, x2;
   double y1;
+
   /** Creates a new DriveOneMod. */
   public DriveOneMod(SwerveModule swerve) {
     this.swerve = swerve;
@@ -22,7 +23,8 @@ public class DriveOneMod extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -30,13 +32,12 @@ public class DriveOneMod extends CommandBase {
     y1 = RobotContainer.getYLeft();
     x2 = RobotContainer.getXRight();
     swerve.simpleTurnToAngle(90);
-    SmartDashboard.putNumber("Absolute Position Mod 4", swerve.getModuleAngleAbsolute());
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) 
-  {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override

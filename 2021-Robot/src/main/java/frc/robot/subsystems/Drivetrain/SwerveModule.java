@@ -35,7 +35,6 @@ public class SwerveModule extends SubsystemBase {
     angle_motor = new WPI_TalonFX(angleMotor);
     speed_motor = new WPI_TalonFX(speedMotor);
     encoder = new CANCoder(encoderID);
-
     pidController = new PIDController(Constants.PIDContants.swerveModule.p, Constants.PIDContants.swerveModule.i, Constants.PIDContants.swerveModule.d);
     MAX_VOLTS = maxVoltage;
     

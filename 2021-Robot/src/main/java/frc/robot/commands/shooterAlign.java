@@ -19,15 +19,15 @@ public class shooterAlign extends PIDCommand {
   public shooterAlign(Shooter shooter, SwerveDrive swerve) { 
     super(
         // The controller that the command will use
-        new PIDController(0, 0, 0), //TODO: we finna tune this neighbor baybee
+        new PIDController(0, 0, 0), //TODO: Tune
         // This should return the measurement
-        () -> 0,
+        shooter::getXOffset,
         // This should return the setpoint (can also be a constant)
-        () -> 0,
+        0,
         // This uses the output
         output -> {
+          swerve.driveRoboCentric(0, 0, output * .4);
           // Use the output here
-
         });
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
