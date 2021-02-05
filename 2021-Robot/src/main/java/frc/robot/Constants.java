@@ -50,8 +50,8 @@ public final class Constants {
     public static final double L = 23.75;
     public static final double W = 24.75;
     public static final int SWERVE_MAX_VOLTS = 0;
-
-
+    public static final int talonEncoderResolution = 2048;
+    public static final int swerveWheelDiam = 4;
 
     public static enum PIDContants {
         swerveModule("swerveModules",.042,.003,0,0);
