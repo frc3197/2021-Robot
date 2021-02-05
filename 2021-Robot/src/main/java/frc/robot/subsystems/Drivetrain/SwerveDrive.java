@@ -2,20 +2,11 @@ package frc.robot.subsystems.Drivetrain;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.Sendable;
-import edu.wpi.first.wpilibj.SerialPort.Port;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Units;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive {
@@ -28,10 +19,10 @@ public class SwerveDrive {
     private final Translation2d m_backLeftLocation = new Translation2d();
     private final Translation2d m_backRightLocation = new Translation2d();
 
-    public final SwerveModule m_frontRight = new SwerveModule();
-    public final SwerveModule m_frontLeft = new SwerveModule();
-    public final SwerveModule m_backRight = new SwerveModule();
-    public final SwerveModule m_backLeft = new SwerveModule();
+    public final SwerveModule m_frontRight;
+    public final SwerveModule m_frontLeft;
+    public final SwerveModule m_backRight;
+    public final SwerveModule m_backLeft;
 
     public static AHRS gyro = new AHRS(Port.kUSB);
 
@@ -40,7 +31,13 @@ public class SwerveDrive {
 
     private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, gyro.getRotation2d());
 
-    public SwerveDrive() {
+    public SwerveDrive(SwerveModule backRight,SwerveModule backLeft,SwerveModule frontRight,SwerveModule frontLeft) {
+    m_frontRight = frontRight;
+    m_frontLeft = frontLeft;
+    m_backRight = backRight;
+    m_backLeft = backLeft;
+
+
     gyro.reset();
 }
     //drive command

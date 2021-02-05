@@ -24,7 +24,7 @@ public class SwerveModule extends SubsystemBase {
   private static final double kWheelRadius = 0;
   private static final int kEncoderResolution = 0;
 
-  private static final double kModuleMaxAngularVelocity = SwerveDrive.kMaxAngularSpeed;
+  private static final double kModuleMaxAngularVelocity = SwerveDrive.maxAngleSpeed;
   private static final double kModuleMaxAngularAcceleration =
       2 * Math.PI; // radians per second squared
 
@@ -32,31 +32,21 @@ public class SwerveModule extends SubsystemBase {
   private final WPI_TalonFX angle_motor;
   
   private final CANCoder encoder;
-  private final PIDController m_drivePIDController = new PIDController(1, 0, 0);
+  private PIDController m_drivePIDController = new PIDController(1, 0, 0);
 
-  private final ProfiledPIDController m_turningPIDController =
-      new ProfiledPIDController(
-          1,
-          0,
-          0,
-          new TrapezoidProfile.Constraints(
-              kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
+  private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(1, 0, 0,
+      new TrapezoidProfile.Constraints(kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(1, 3);
   private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(1, 0.5);
 
-
-
-
-
-
-
   public SwerveModule(int angleMotor, int speedMotor, int encoderID) {
     angle_motor = new WPI_TalonFX(angleMotor);
     speed_motor = new WPI_TalonFX(speedMotor);
     encoder = new CANCoder(encoderID);
-    m_drivePIDController = new PIDController(Constants.PIDContants.swerveModule.p, Constants.PIDContants.swerveModule.i, Constants.PIDContants.swerveModule.d);    
+    m_drivePIDController = new PIDController(Constants.PIDContants.swerveModule.p, Constants.PIDContants.swerveModule.i,
+        Constants.PIDContants.swerveModule.d);
 
     m_turningPIDController.setTolerance(5);
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
@@ -71,7 +61,7 @@ public class SwerveModule extends SubsystemBase {
     //Pulls the integrated sensor velocity
     double driveUnitsPer100ms = speed_motor.getSelectedSensorVelocity();
     // Converts the encoder rate to meters per second
-    double encoderRate = driveUnitsPer100ms / Constants.talonEncoderResolution * 10 * Constants.swerveWheelDiam * Constants.swerveDrive;
+    double encoderRate = driveUnitsPer100ms / Constants.talonEncoderResolution * 10 * Constants.swerveWheelDiam * Constants.swerveDriveMotorGR;
     return encoderRate;
   }
 

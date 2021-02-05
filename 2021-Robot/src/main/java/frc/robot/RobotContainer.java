@@ -4,15 +4,9 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Drive;
-import frc.robot.commands.DriveOneMod;
-import frc.robot.commands.SwerveToAngle;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Drivetrain.SwerveDrive;
@@ -54,10 +48,6 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    driver1A.whenPressed(new SwerveToAngle(swerveDrive, 0));
-    driver1X.whenPressed(new SwerveToAngle(swerveDrive, 90));
-    driver1Y.whenPressed(new SwerveToAngle(swerveDrive, 180));
-    driver1B.whenPressed(new SwerveToAngle(swerveDrive, 90));
 
   }
 
