@@ -83,10 +83,26 @@ public class SwerveModule extends SubsystemBase {
     return new SwerveModuleState(getSpeedEncoderRate(),new Rotation2d(getAngle()));
   }
 
+  public SwerveModuleState optimize(
+    SwerveModuleState desiredState, Rotation2d currentAngle) {
+  var delta = desiredState.angle.minus(currentAngle);
+  if (Math.abs(delta.getDegrees()) > 90.0) {
+    return new SwerveModuleState(
+        -desiredState.speedMetersPerSecond,
+        desiredState.angle.rotateBy(Rotation2d.fromDegrees(180.0)));
+  } else {
+    return new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle);
+  }
+}
+
+
+
+
+
   public void setDesiredState(SwerveModuleState desiredState){
 
     SwerveModuleState state =
-        SwerveModuleState.optimize(desiredState, new Rotation2d(getAngle()));
+        optimize(desiredState, new Rotation2d(getAngle()));
 
     // Calculate the drive output from the drive PID controller.
     final double driveOutput =
