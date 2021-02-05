@@ -4,20 +4,16 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.SlewRateLimiter;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain.SwerveDrive;
 
 public class Drive extends CommandBase {
-  private SwerveDrive swerve;
 
   private final XboxController m_controller = new XboxController(0);
-  private final SwerveDrive m_swerve = new SwerveDrive();
+  private final SwerveDrive m_swerve;
 
   private boolean fieldRelative = false;
 
@@ -33,6 +29,11 @@ public class Drive extends CommandBase {
    * Creates a new Drive.
    */
 
+   public Drive(SwerveDrive m_swerve){
+     this.m_swerve = m_swerve;
+     addRequirements(m_swerve);
+    
+   }
 
   // Called when the command is initially scheduled.
   @Override

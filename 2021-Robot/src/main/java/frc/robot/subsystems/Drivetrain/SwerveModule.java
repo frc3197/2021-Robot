@@ -4,12 +4,9 @@
 
 package frc.robot.subsystems.Drivetrain;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -21,10 +18,10 @@ import frc.robot.Constants;
 
 public class SwerveModule extends SubsystemBase {
 // Measurments are all done in Meters.
-  private static final double kWheelRadius = 0;
-  private static final int kEncoderResolution = 0;
 
+//TODO: Set Proper Constant Values: Max Angular Velocity
   private static final double kModuleMaxAngularVelocity = SwerveDrive.maxAngleSpeed;
+//TODO: Set Proper Constant Values Max Angular Acceleration
   private static final double kModuleMaxAngularAcceleration =
       2 * Math.PI; // radians per second squared
 
@@ -32,12 +29,13 @@ public class SwerveModule extends SubsystemBase {
   private final WPI_TalonFX angle_motor;
   
   private final CANCoder encoder;
+//TODO: Set Proper Constant Values: PID Drive Controller
   private PIDController m_drivePIDController = new PIDController(1, 0, 0);
 
   private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(1, 0, 0,
       new TrapezoidProfile.Constraints(kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
 
-  // Gains are for example purposes only - must be determined for your own robot!
+//TODO: Set Proper Constant Values: FeedForward Constants  
   private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(1, 3);
   private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(1, 0.5);
 
@@ -68,6 +66,11 @@ public class SwerveModule extends SubsystemBase {
   public double getAngle(){
     return encoder.getAbsolutePosition();
   }
+
+  public void resetDriveEncoder(){
+    speed_motor.setSelectedSensorPosition(0);
+  }
+
 
   public SwerveModuleState getState(){
     return new SwerveModuleState(getSpeedEncoderRate(),new Rotation2d(getAngle()));

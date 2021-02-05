@@ -35,6 +35,7 @@ public class Robot extends TimedRobot {
    * and SmartDashboard integrated updating.
    */
   @Override
+  @SuppressWarnings({"static-access"})
   public void robotPeriodic() {
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled

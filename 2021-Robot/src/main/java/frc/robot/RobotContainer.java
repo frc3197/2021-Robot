@@ -16,20 +16,21 @@ public class RobotContainer {
 
   private static Joystick driver1 = new Joystick(0);
 
+  /*
   private JoystickButton driver1A = new JoystickButton(driver1, 1);
   private JoystickButton driver1X = new JoystickButton(driver1, 2);
   private JoystickButton driver1Y = new JoystickButton(driver1, 4);
   private JoystickButton driver1B = new JoystickButton(driver1, 3);
-
+  */
 
   public static SwerveModule backLeft = new SwerveModule(Constants.TalonID.kSwerveBLAngle.id,
-      Constants.TalonID.kSwerveBLSpeed.id, Constants.CANDevices.kCANCoderBL.id, Constants.SWERVE_MAX_VOLTS,false);
+      Constants.TalonID.kSwerveBLSpeed.id, Constants.CANDevices.kCANCoderBL.id);
   public static SwerveModule backRight = new SwerveModule(Constants.TalonID.kSwerveBRAngle.id,
-      Constants.TalonID.kSwerveBRSpeed.id, Constants.CANDevices.kCANCoderBR.id, Constants.SWERVE_MAX_VOLTS,true);
+      Constants.TalonID.kSwerveBRSpeed.id, Constants.CANDevices.kCANCoderBR.id);
   public static SwerveModule frontLeft = new SwerveModule(Constants.TalonID.kSwerveFLAngle.id,
-      Constants.TalonID.kSwerveFLSpeed.id, Constants.CANDevices.kCANCoderFL.id, Constants.SWERVE_MAX_VOLTS,false);
+      Constants.TalonID.kSwerveFLSpeed.id, Constants.CANDevices.kCANCoderFL.id);
   public static SwerveModule frontRight = new SwerveModule(Constants.TalonID.kSwerveFRAngle.id,
-      Constants.TalonID.kSwerveFRSpeed.id, Constants.CANDevices.kCANCoderFR.id, Constants.SWERVE_MAX_VOLTS,true);
+      Constants.TalonID.kSwerveFRSpeed.id, Constants.CANDevices.kCANCoderFR.id);
 
   public static SwerveDrive swerveDrive = new SwerveDrive(backRight, backLeft, frontRight, frontLeft);
 

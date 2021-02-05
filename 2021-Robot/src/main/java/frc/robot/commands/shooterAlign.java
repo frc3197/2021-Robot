@@ -19,14 +19,15 @@ public class shooterAlign extends PIDCommand {
   public shooterAlign(Shooter shooter, SwerveDrive swerve) { 
     super(
         // The controller that the command will use
-        new PIDController(0, 0, 0), //TODO: Tune
+        // TODO: Set Proper Constant Values: Shooter PID Align
+        new PIDController(0, 0, 0), 
         // This should return the measurement
         shooter::getXOffset,
         // This should return the setpoint (can also be a constant)
         0,
         // This uses the output
         output -> {
-          swerve.driveRoboCentric(0, 0, output * .4);
+          //swerve.driveRoboCentric(0, 0, output * .4);
           // Use the output here
         });
     // Use addRequirements() here to declare subsystem dependencies.
