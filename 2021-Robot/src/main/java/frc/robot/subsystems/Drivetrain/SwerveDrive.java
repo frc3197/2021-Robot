@@ -15,12 +15,11 @@ public class SwerveDrive implements Subsystem {
     public static double maxSpeed = Units.feetToMeters(16.2);
     public static double maxAngleSpeed = 0;
 
-    // TODO: Set Proper Constant Values: Distance from the center of the bot
     // Translation from the center of the bot, distance of the wheels to the center.
-    private final Translation2d m_frontLeftLocation = new Translation2d();
-    private final Translation2d m_frontRightLocation = new Translation2d();
-    private final Translation2d m_backLeftLocation = new Translation2d();
-    private final Translation2d m_backRightLocation = new Translation2d();
+    private final Translation2d m_frontLeftLocation = new Translation2d(0.314,0.301);
+    private final Translation2d m_frontRightLocation = new Translation2d(0.314,-0.301);
+    private final Translation2d m_backLeftLocation = new Translation2d(-0.314,0.301);
+    private final Translation2d m_backRightLocation = new Translation2d(-0.314,-0.301);
 
     // Creates 4 SwerveModule Objects
     public final SwerveModule m_frontRight;
@@ -54,9 +53,9 @@ public class SwerveDrive implements Subsystem {
         SwerveDriveKinematics.normalizeWheelSpeeds(swerveModuleStates, maxSpeed);
         // TODO: Set Proper Constant Values: Swerve Module States Array
         m_frontLeft.setDesiredState(swerveModuleStates[0]);
-        m_frontRight.setDesiredState(swerveModuleStates[0]);
-        m_backLeft.setDesiredState(swerveModuleStates[0]);
-        m_backRight.setDesiredState(swerveModuleStates[0]);
+        m_frontRight.setDesiredState(swerveModuleStates[1]);
+        m_backLeft.setDesiredState(swerveModuleStates[2]);
+        m_backRight.setDesiredState(swerveModuleStates[3]);
       }
 //do things again 
     public void updateOdometry() {
