@@ -19,9 +19,8 @@ import frc.robot.Constants;
 public class SwerveModule extends SubsystemBase {
 // Measurments are all done in Meters.
 
-//TODO: Set Proper Constant Values: Max Angular Velocity
+
   private static final double kModuleMaxAngularVelocity = SwerveDrive.maxAngleSpeed;
-//TODO: Set Proper Constant Values Max Angular Acceleration
   private static final double kModuleMaxAngularAcceleration =
       2 * Math.PI; // radians per second squared
 
