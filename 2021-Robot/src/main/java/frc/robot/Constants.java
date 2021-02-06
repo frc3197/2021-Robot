@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.util.Units;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants. This class should not be used for any other
@@ -51,11 +53,12 @@ public final class Constants {
     public static final double W = 24.75;
     public static final int SWERVE_MAX_VOLTS = 0;
     public static final int talonEncoderResolution = 2048;
-    public static final int swerveWheelDiam = 4;
+    public static final double swerveWheelDiam = Units.inchesToMeters(4);
     public static final double swerveDriveMotorGR = 6.86;
+	public static final double angleFeedForwardkV = 0.0019405125737;
 
     public static enum PIDContants {
-        swerveModule("swerveModules",.042,.003,0,0);
+        swerveSpeed("swerveSpeed",0.02,.5,0,0),swerveAnge("swerveAngle",3,0,0,0);
 
         public final String name;
         public final double p;
