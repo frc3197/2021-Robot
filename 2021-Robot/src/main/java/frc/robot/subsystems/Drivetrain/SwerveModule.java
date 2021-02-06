@@ -45,7 +45,7 @@ public class SwerveModule extends SubsystemBase {
     m_drivePIDController = new PIDController(Constants.PIDContants.swerveModule.p, Constants.PIDContants.swerveModule.i,
         Constants.PIDContants.swerveModule.d);
 
-    m_turningPIDController.setTolerance(5);
+    m_turningPIDController.setTolerance(2.5);
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
