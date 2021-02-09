@@ -50,7 +50,7 @@ public final class Constants {
     public static final double L = 23.75;
     public static final double W = 24.75;
     public static final int SWERVE_MAX_VOLTS = 0;
-
+    public static int intakeMotor = 10;
 
 
     public static enum PIDContants {

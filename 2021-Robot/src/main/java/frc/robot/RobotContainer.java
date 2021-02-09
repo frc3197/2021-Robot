@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Drive;
 import frc.robot.commands.DriveOneMod;
 import frc.robot.commands.SwerveToAngle;
+import frc.robot.commands.runIntake;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Drivetrain.SwerveDrive;
@@ -44,6 +45,7 @@ public class RobotContainer {
   public static Shooter shooter = new Shooter();
 
   public RobotContainer() {
+  
     swerveDrive.setDefaultCommand(new Drive(swerveDrive));
 
     driver1.setXChannel(0);
@@ -51,6 +53,8 @@ public class RobotContainer {
     driver1.setZChannel(2);
 
     configureButtonBindings();
+
+    
   }
 
   private void configureButtonBindings() {
@@ -59,6 +63,7 @@ public class RobotContainer {
     driver1Y.whenPressed(new SwerveToAngle(swerveDrive, 180));
     driver1B.whenPressed(new SwerveToAngle(swerveDrive, 90));
 
+    intakeButton.toggleWhenPressed(new runIntake(intake));
   }
 
   public static double getXLeft() {
@@ -86,8 +91,9 @@ public class RobotContainer {
     }
     else{
     return input;}
-  }
+      
 
+  public JoystickButton intakeButton = new JoystickButton(driver1, 3);
   /*
    * public Command getAutonomousCommand() {
    * 
