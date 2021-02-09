@@ -5,14 +5,22 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
 import org.photonvision.PhotonCamera;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
 
 
 public class Intake extends SubsystemBase {
+
+  WPI_TalonFX intakeMotor;
   
   PhotonCamera camera = new PhotonCamera("intakeCam");
   /** Creates a new Intake. */
   public Intake() {
+
+    intakeMotor = new WPI_TalonFX(Constants.intakeMotor);
 
   }
 
@@ -23,6 +31,12 @@ public class Intake extends SubsystemBase {
 
   public PhotonCamera getCam(){
     return camera;
+  }
+
+  public void setIntake(double speed){
+
+    intakeMotor.set(speed);
+
   }
 
   public double getYaw(){
