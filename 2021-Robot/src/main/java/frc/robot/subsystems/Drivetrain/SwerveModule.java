@@ -7,11 +7,13 @@ package frc.robot.subsystems.Drivetrain;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,6 +30,9 @@ public class SwerveModule extends SubsystemBase {
   private final WPI_TalonFX speed_motor;
   private final WPI_TalonFX angle_motor;
   
+  static int numModule = 0;
+  final int moduleNumber;
+
   private final CANCoder encoder;
 //TODO: Set Proper Constant Values: PID Drive Controller
   private PIDController m_drivePIDController = new PIDController(0, 0, 0);
@@ -36,10 +41,12 @@ public class SwerveModule extends SubsystemBase {
       new TrapezoidProfile.Constraints(kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
 
 //TODO: Set Proper Constant Values: FeedForward Constants  
-  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(1, 3);
-  private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(.8,Constants.angleFeedForwardkV);
+  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0, 0);
+  private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(.085,Constants.angleFeedForwardkV);
 
   public SwerveModule(int angleMotor, int speedMotor, int encoderID) {
+    moduleNumber = numModule;
+    numModule++;
     angle_motor = new WPI_TalonFX(angleMotor);
     speed_motor = new WPI_TalonFX(speedMotor);
 
@@ -56,6 +63,7 @@ public class SwerveModule extends SubsystemBase {
 
   @Override
   public void periodic() {
+    
     // This method will be called once per scheduler run
   }
 
@@ -112,20 +120,35 @@ public class SwerveModule extends SubsystemBase {
     final double driveOutput =
         m_drivePIDController.calculate(getSpeedEncoderRate(), state.speedMetersPerSecond);
 
+    // Sending PID Effort to SmartDashbboard
+    SmartDashboard.putNumber("swerveModule " + moduleNumber + "/drivePIDEffort" , driveOutput);
+
+
+
     final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
+
+    
+    // Sending FF Effort to SmartDashbboard
+    SmartDashboard.putNumber("swerveModule " + moduleNumber + "/driveFFEffort" , driveFeedforward);
+
 
     // Calculate the turning motor output from the turning PID controller.
     final double turnOutput =
         m_turningPIDController.calculate(getAngleRadians(), state.angle.getRadians());
 
+    // Sending PID Effort to SmartDashbboard
+    SmartDashboard.putNumber("swerveModule " + moduleNumber + "/anglePIDEffort" , turnOutput);
+    
     final double turnFeedforward =
         m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
-    speed_motor.setVoltage(driveOutput + driveFeedforward);
-    angle_motor.setVoltage(turnOutput + turnFeedforward);
+    // Sending FF Effort to SmartDashbboard
+    SmartDashboard.putNumber("swerveModule " + moduleNumber + "/angleFFEffort" , turnFeedforward);
+    SmartDashboard.putNumber("Voltage Multiplier" , RobotController.getBatteryVoltage());
 
-
-
+    speed_motor.setVoltage(0);
+    //speed_motor.setVoltage((driveOutput + driveFeedforward) * RobotController.getBatteryVoltage());
+    angle_motor.setVoltage((turnOutput + turnFeedforward) * RobotController.getBatteryVoltage());
   }
 
 

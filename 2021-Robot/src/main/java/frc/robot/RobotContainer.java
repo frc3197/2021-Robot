@@ -49,7 +49,6 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-
   }
 
   public static double getXLeft() {
