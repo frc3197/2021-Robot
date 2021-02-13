@@ -52,21 +52,27 @@ public final class Constants {
     public static final double L = 23.75;
     public static final double W = 24.75;
     public static final int SWERVE_MAX_VOLTS = 0;
+
     public static final int talonEncoderResolution = 2048;
     public static final double swerveWheelDiam = Units.inchesToMeters(4);
     public static final double swerveDriveMotorGR = 6.86;
     // This could be 6 or 6.2
 	public static final double angleFeedForwardkV = 0;
+    public static int intakeMotor = 10;
+
+    public static final int beamBreakInput = 0;
+    public static final int beamBreakOutput = 1;
 
     public static enum PIDContants {
-        swerveSpeed("swerveSpeed",0.02,.5,0,0),swerveAnge("swerveAngle",0,0,0,0);
+        swerveModule("swerveModules", .042, .003, 0, 0);
+
 
         public final String name;
         public final double p;
         public final double i;
         public final double d;
         public final double f;
-        
+
         private PIDContants(String name, double p, double i, double d, double f) {
             this.name = name;
             this.p = p;
