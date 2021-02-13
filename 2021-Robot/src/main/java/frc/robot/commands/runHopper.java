@@ -14,7 +14,7 @@ public class runHopper extends CommandBase {
   public runHopper(Hopper hopper) {
     this.hopper = hopper;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(Hopper);
+    addRequirements(hopper);
   }
 
   // Called when the command is initially scheduled.
@@ -26,10 +26,11 @@ public class runHopper extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
     if (Hopper.count % 2 == 0) {
-      sethopperMotor(1);
+      hopper.sethopperMotor(1);
     } else {
-      sethopperMotor(0);
+      hopper.sethopperMotor(0);
     }
 
   }

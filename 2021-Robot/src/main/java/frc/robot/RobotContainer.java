@@ -40,6 +40,9 @@ public class RobotContainer {
 
   public static SwerveDrive swerveDrive = new SwerveDrive(backRight, backLeft, frontRight, frontLeft);
 
+
+  public static Hopper hopper = new Hopper(0);
+  
   public static Intake intake = new Intake();
 
   public static Shooter shooter = new Shooter();
@@ -57,7 +60,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     driver1B.toggleWhenPressed(new runHopper(Hopper));
-
+    configureButtonBindings();
   }
 
   public static double getXLeft() {
