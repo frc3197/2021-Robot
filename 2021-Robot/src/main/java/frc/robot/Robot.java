@@ -21,8 +21,8 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    SwerveDrive.gyro.calibrate();
-    SwerveDrive.gyro.reset();
+    //SwerveDrive.gyro.calibrate();
+    //SwerveDrive.gyro.reset();
   }
 
   /**
@@ -35,6 +35,7 @@ public class Robot extends TimedRobot {
    * and SmartDashboard integrated updating.
    */
   @Override
+  @SuppressWarnings({"static-access"})
   public void robotPeriodic() {
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled
@@ -97,6 +98,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    
   }
 
   @Override

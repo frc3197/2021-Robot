@@ -4,25 +4,34 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain.SwerveDrive;
 
 public class Drive extends CommandBase {
-  private SwerveDrive swerve;
-  double x1;
-  double y1;
-  double x2;
+  
+  private final SwerveDrive m_swerve;
+
+  private boolean fieldRelative = false;
+
+  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(4);
+  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(4);
+  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(20);
+
+
+  double x1,x2,y1;
 
   /**
    * Creates a new Drive.
    */
-  public Drive(SwerveDrive swerve) {
-    this.swerve = swerve;
-    addRequirements(swerve);
-    // Use addRequirements() here to declare subsystem dependencies.
-  }
+
+   public Drive(SwerveDrive m_swerve){
+     this.m_swerve = m_swerve;
+     addRequirements(m_swerve);
+    
+   }
 
   // Called when the command is initially scheduled.
   @Override
@@ -32,17 +41,38 @@ public class Drive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    x1 = RobotContainer.getXLeft();
-    y1 = RobotContainer.getYLeft();
+    x1 = -RobotContainer.getXLeft();
     x2 = RobotContainer.getXRight();
+    y1 = RobotContainer.getYLeft();
+  
+      // Get the x speed. We are inverting this because Xbox controllers return
+    // negative values when we push forward.
+     var xSpeed =
+        m_xspeedLimiter.calculate(y1)
+            * SwerveDrive.maxSpeed;
 
-    swerve.driveRoboCentric(x1, y1, x2);
+    // Get the y speed or sideways/strafe speed. We are inverting this because
+    // we want a positive value when we pull to the left. Xbox controllers
+    // return positive values when you pull to the right by default.
+     var ySpeed =
+        -m_yspeedLimiter.calculate(x1)
+            * SwerveDrive.maxSpeed;
+
+    // Get the rate of angular rotation. We are inverting this because we want a
+    // positive value when we pull to the left (remember, CCW is positive in
+    // mathematics). Xbox controllers return positive values when you pull to
+    // the right by default.
+     var rot =
+        -m_rotLimiter.calculate(x2)
+            * SwerveDrive.maxAngleSpeed;
+
+    m_swerve.drive(xSpeed, ySpeed, rot, fieldRelative);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    swerve.driveFieldCentric(0, 0, 0);
+    m_swerve.drive(0, 0, 0, fieldRelative);
   }
 
   // Returns true when the command should end.

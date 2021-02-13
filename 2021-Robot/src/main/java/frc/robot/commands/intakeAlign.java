@@ -18,9 +18,10 @@ public class intakeAlign extends PIDCommand {
   /** Creates a new intakeAlign. */
 
 
-  public intakeAlign(Intake intake, SwerveDrive swerve) {//TODO : Tune
+  public intakeAlign(Intake intake, SwerveDrive swerve) {
     super(
         // The controller that the command will use
+        // TODO: Set Proper Constant Values: Intake PID Align
         new PIDController(0, 0, 0),
         // This should return the measurement
         intake::getYaw,
@@ -29,7 +30,7 @@ public class intakeAlign extends PIDCommand {
         // This uses the output
         output -> {
           // Use the output here
-        swerve.driveRoboCentric(0, 0, output * .4);
+        //swerve.driveRoboCentric(0, 0, output * .4);
 
 
 

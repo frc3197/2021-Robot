@@ -1,246 +1,91 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems.Drivetrain;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.SerialPort.Port;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.util.Units;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
-public class SwerveDrive extends SubsystemBase {
-  // Creates 4 Swerve Modules, each module uses two motors for driving and angle
-  public SwerveModule backRight;
-  public SwerveModule backLeft;
-  public SwerveModule frontRight;
-  public SwerveModule frontLeft;
+/** Represents a swerve drive style drivetrain. */
+public class SwerveDrive implements Subsystem {
+    public static double maxSpeed = Units.feetToMeters(16.2);
+    public static double maxAngleSpeed = 3*Math.PI;
 
-  // L is the WheelBase, distance between the wheels on the y-Axis
-  private double L = Constants.L;
-  // W is the TrackWidth, distance between the wheels on the x-Axis
-  private double W = Constants.W;
-  //
-  private double gyroHeading;
-  // public static ADXRS450_Gyro gyro = new ADXRS450_Gyro();
-  public static AHRS gyro = new AHRS(Port.kUSB);
+    // Translation from the center of the bot, distance of the wheels to the center.
+    private final Translation2d m_frontLeftLocation = new Translation2d(0.314,0.301);
+    private final Translation2d m_frontRightLocation = new Translation2d(0.314,-0.301);
+    private final Translation2d m_backLeftLocation = new Translation2d(-0.314,0.301);
+    private final Translation2d m_backRightLocation = new Translation2d(-0.314,-0.301);
 
-  public SwerveDrive(SwerveModule backRight, SwerveModule backLeft, SwerveModule frontRight, SwerveModule frontLeft) {
-    this.backRight = backRight;
-    this.backLeft = backLeft;
-    this.frontRight = frontRight;
-    this.frontLeft = frontLeft;
-  }
+    // Creates 4 SwerveModule Objects
+    public final SwerveModule m_frontRight;
+    public final SwerveModule m_frontLeft;
+    public final SwerveModule m_backRight;
+    public final SwerveModule m_backLeft;
 
-  @Override
-  public void periodic() {
-    // Updates our gyro heading value periodically
-    gyroHeading = getHeadingRadians();
+    public static AHRS gyro = new AHRS(Port.kUSB);
 
-  }
+    private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(m_frontLeftLocation,
+            m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
-  public double getGyroAngle() {
-    // 720,000 is just 360 multiplied by 2000
-    // help
-    return gyro.getAngle() + 72000;
-  }
+    private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, gyro.getRotation2d());
 
-  public double getHeading() {
-    // The heading is the gyroAngle but when it hits 360 it goes back to zero.
+    public SwerveDrive(SwerveModule backRight,SwerveModule backLeft,SwerveModule frontRight,SwerveModule frontLeft) {
+    m_frontRight = frontRight;
+    m_frontLeft = frontLeft;
+    m_backRight = backRight;
+    m_backLeft = backLeft;
 
-    double heading = getGyroAngle() % 360;
 
-    return heading;
-  }
-
-  public double getHeadingRadians() {
-    double heading = Units.degreesToRadians(getGyroAngle() % 360);
-    return heading;
-  }
-
-  public void driveFieldCentric(double x1, double y1, double x2) {
-    // x1 is the x-axis of the left joystick used for strafing
-    // y1 is the y-axis of the left joystick used for driving forward and backward
-    // x2 is the x-axis of the right joystick used for rotation
-
-    // This makes it feild centric, look up the math...
-    // tbh i dont want to figure out what it does rn so yeah
-    double temp = y1 * Math.cos(gyroHeading) + x1 * Math.sin(gyroHeading);
-
-    x1 = -y1 * Math.sin(gyroHeading) + x1 * Math.cos(gyroHeading);
-
-    y1 = temp;
-
-    double r = Math.sqrt((L * L) + (W * W));
-    y1 *= -1;
-    // Defines A,B,C,D for use in WheelSpeeds and WheelAngle Calculations
-    double a = x1 - x2 * (L / r);
-    double b = x1 + x2 * (L / r);
-    double c = y1 - x2 * (W / r);
-    double d = y1 + x2 * (W / r);
-
-    int mult = 1;
-    if (y1 > 0 && x1 != 0) {
-      mult = -1;
-    }
-    // Calculations for wheel speeds
-    double frontRightSpeed = Math.sqrt((b * b) + (c * c));
-
-    double frontLeftSpeed = Math.sqrt((b * b) + (d * d));
-
-    double backLeftSpeed = Math.sqrt((a * a) + (d * d));
-
-    double backRightSpeed = Math.sqrt((a * a) + (c * c));
-
-    // Calculations for wheel angles
-    double frontRightAngle = mult * Math.atan2(b, c) / Math.PI;
-
-    double frontLeftAngle = mult * Math.atan2(b, d) / Math.PI;
-
-    double backLeftAngle = mult * Math.atan2(a, d) / Math.PI;
-
-    double backRightAngle = mult * Math.atan2(a, c) / Math.PI;
-
-    /*
-     * // This is to normalized wheel speeds to a range of 0 to 1. double max =
-     * frontRightSpeed; if(frontLeftSpeed > max ){max = frontLeftSpeed;}
-     * if(backLeftSpeed > max ){max = backLeftSpeed;} if(backRightSpeed >
-     * max){max=backRightSpeed;} if(max>1){ frontRightSpeed/=max;
-     * frontLeftSpeed/=max; backLeftSpeed/=max; backRightSpeed/=max; }
-     */
-
-    // Calls the drive function of the 4 modules and feeds in the WheelSpeeds and
-    // WheelAngles
-
-    double max = frontRightSpeed;
-    if (frontLeftSpeed > max) {
-      max = frontLeftSpeed;
-    }
-    if (backLeftSpeed > max) {
-      max = backLeftSpeed;
-    }
-    if (backRightSpeed > max) {
-      max = backRightSpeed;
-    }
-    if (max > 1) {
-      frontRightSpeed /= max;
-      frontLeftSpeed /= max;
-      backLeftSpeed /= max;
-      backRightSpeed /= max;
-    }
-
-    backRight.drive(backRightSpeed, backRightAngle);
-    backLeft.drive(backLeftSpeed, backLeftAngle);
-    frontRight.drive(frontRightSpeed, frontRightAngle);
-    frontLeft.drive(frontLeftSpeed, frontLeftAngle);
-
-  }
-
-  public void turnAllToAngle(double angle) {
-    backRight.turnToAngle(angle);
-    backLeft.turnToAngle(angle);
-    frontLeft.turnToAngle(angle);
-    frontRight.turnToAngle(angle);
-  }
-
-  public void resetEncoders() {
-    backRight.resetEncoder();
-    backLeft.resetEncoder();
-    frontLeft.resetEncoder();
-    frontRight.resetEncoder();
-  }
-
-  public void driveRoboCentric(double x1, double y1, double x2) {
-    // Same as FieldCentric without the inclusion of the gyro heading to alter
-    // inputs
-    double temp = y1 * Math.cos(gyroHeading) + x1 * Math.sin(gyroHeading);
-
-    x1 = -0.5 * -y1 * Math.sin(gyroHeading) + x1 * Math.cos(gyroHeading);
-
-    y1 = temp;
-
-    double r = Math.sqrt((L * L) + (W * W));
-    y1 *= -1;
-    boolean isInverted = false;
-    double a = x1 - x2 * (L / r);
-    double b = x1 + x2 * (L / r);
-    double c = y1 - x2 * (W / r);
-    double d = y1 + x2 * (W / r);
-
-    if (c <= 0) {
-      isInverted = true;
-      c = Math.abs(c);
-      backRight.getSpeedMotor().setInverted(isInverted);
-      frontRight.getSpeedMotor().setInverted(isInverted);
-
-    } else {
-      isInverted = false;
-      backRight.getSpeedMotor().setInverted(isInverted);
-      frontRight.getSpeedMotor().setInverted(isInverted);
-    }
-
-    if (d <= 0) {
-      isInverted = true;
-      d = Math.abs(d);
-      backLeft.getSpeedMotor().setInverted(isInverted);
-      frontLeft.getSpeedMotor().setInverted(isInverted);
-    } else {
-      isInverted = false;
-      backLeft.getSpeedMotor().setInverted(isInverted);
-      frontLeft.getSpeedMotor().setInverted(isInverted);
-    }
-
-    // Calculations for wheel speeds
-    double frontRightSpeed = Math.sqrt((b * b) + (c * c));
-
-    double frontLeftSpeed = Math.sqrt((b * b) + (d * d));
-
-    double backLeftSpeed = Math.sqrt((a * a) + (d * d));
-
-    double backRightSpeed = Math.sqrt((a * a) + (c * c));
-
-    int mult = 1;
-    if (y1 > 0 && x1 != 0) {
-      mult = -1;
-    }
-
-    // Calculations for wheel angles
-    double frontRightAngle = mult * Math.atan2(b, c) * 180 / Math.PI;
-    double frontLeftAngle = mult * Math.atan2(b, d) * 180 / Math.PI;
-    double backLeftAngle = mult * Math.atan2(a, d) * 180 / Math.PI;
-    double backRightAngle = mult * Math.atan2(a, c) * 180 / Math.PI;
-
-    double max = frontRightSpeed;
-    if (frontLeftSpeed > max) {
-      max = frontLeftSpeed;
-    }
-    if (backLeftSpeed > max) {
-      max = backLeftSpeed;
-    }
-    if (backRightSpeed > max) {
-      max = backRightSpeed;
-    }
-    if (max > 1) {
-      frontRightSpeed /= max;
-      frontLeftSpeed /= max;
-      backLeftSpeed /= max;
-      backRightSpeed /= max;
-    }
-
-    backRight.drive(-backRightSpeed, backRightAngle);
-    backLeft.drive(backLeftSpeed, backLeftAngle);
-    frontRight.drive(-frontRightSpeed, frontRightAngle);
-    frontLeft.drive(frontLeftSpeed, frontLeftAngle);
-  }
-
-  public void resetGyro() {
     gyro.reset();
-  }
+}
+@Override
+public void periodic() {
+  // This method will be called once per scheduler run
+  updateOdometry();
+}
+
+    //drive command
+    public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+        var swerveModuleStates =
+            m_kinematics.toSwerveModuleStates(
+                fieldRelative
+                    ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d())
+                    : new ChassisSpeeds(xSpeed, ySpeed, rot));
+        SwerveDriveKinematics.normalizeWheelSpeeds(swerveModuleStates, maxSpeed);
+        // TODO: these shud be right but idk we will see
+        m_frontLeft.setDesiredState(swerveModuleStates[0]);
+        m_frontRight.setDesiredState(swerveModuleStates[1]);
+        m_backLeft.setDesiredState(swerveModuleStates[2]);
+        m_backRight.setDesiredState(swerveModuleStates[3]);
+      }
+    
+//do things again 
+    public void updateOdometry() {
+        m_odometry.update(
+            gyro.getRotation2d(),
+            m_frontLeft.getState(),
+            m_frontRight.getState(),
+            m_backLeft.getState(),
+            m_backRight.getState());
+      }
+
+    public void resetGyro(){
+        gyro.reset();
+    }
+
+    public void resetEncoders(){
+        m_frontLeft.resetDriveEncoder();
+        m_frontRight.resetDriveEncoder();
+        m_backLeft.resetDriveEncoder();
+        m_backRight.resetDriveEncoder();
+    }
+
+
+
 }

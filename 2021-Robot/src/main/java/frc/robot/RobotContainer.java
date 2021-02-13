@@ -4,13 +4,12 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Drive;
+import frc.robot.commands.SetVoltage;
 import frc.robot.commands.DriveOneMod;
 import frc.robot.commands.SwerveToAngle;
 import frc.robot.commands.runIntake;
@@ -23,21 +22,27 @@ import frc.robot.subsystems.Drivetrain.SwerveModule;
 
 public class RobotContainer {
 
-  private static Joystick driver1 = new Joystick(0);
+  private static XboxController driver1 = new XboxController(0);
 
+  
   private JoystickButton driver1A = new JoystickButton(driver1, 1);
-  private JoystickButton driver1X = new JoystickButton(driver1, 2);
+  private JoystickButton driver1X = new JoystickButton(driver1, 3);
   private JoystickButton driver1Y = new JoystickButton(driver1, 4);
-  private JoystickButton driver1B = new JoystickButton(driver1, 3);
+
+  private JoystickButton driver1B = new JoystickButton(driver1, 2);
+  
 
   public static SwerveModule backLeft = new SwerveModule(Constants.TalonID.kSwerveBLAngle.id,
-      Constants.TalonID.kSwerveBLSpeed.id, Constants.CANDevices.kCANCoderBL.id, Constants.SWERVE_MAX_VOLTS, false);
+      Constants.TalonID.kSwerveBLSpeed.id, Constants.CANDevices.kCANCoderBL.id, Constants.DriveConstants.backLeftConstants);
+
   public static SwerveModule backRight = new SwerveModule(Constants.TalonID.kSwerveBRAngle.id,
-      Constants.TalonID.kSwerveBRSpeed.id, Constants.CANDevices.kCANCoderBR.id, Constants.SWERVE_MAX_VOLTS, true);
+      Constants.TalonID.kSwerveBRSpeed.id, Constants.CANDevices.kCANCoderBR.id, Constants.DriveConstants.backRightConstants);
+
   public static SwerveModule frontLeft = new SwerveModule(Constants.TalonID.kSwerveFLAngle.id,
-      Constants.TalonID.kSwerveFLSpeed.id, Constants.CANDevices.kCANCoderFL.id, Constants.SWERVE_MAX_VOLTS, false);
+      Constants.TalonID.kSwerveFLSpeed.id, Constants.CANDevices.kCANCoderFL.id,Constants.DriveConstants.frontLeftConstants);
+
   public static SwerveModule frontRight = new SwerveModule(Constants.TalonID.kSwerveFRAngle.id,
-      Constants.TalonID.kSwerveFRSpeed.id, Constants.CANDevices.kCANCoderFR.id, Constants.SWERVE_MAX_VOLTS, true);
+      Constants.TalonID.kSwerveFRSpeed.id, Constants.CANDevices.kCANCoderFR.id, Constants.DriveConstants.frontRightConstants);
 
   public static SwerveDrive swerveDrive = new SwerveDrive(backRight, backLeft, frontRight, frontLeft);
 
@@ -51,15 +56,27 @@ public class RobotContainer {
 
     swerveDrive.setDefaultCommand(new Drive(swerveDrive));
 
-    driver1.setXChannel(0);
-    driver1.setYChannel(1);
-    driver1.setZChannel(2);
 
     configureButtonBindings();
 
   }
 
   private void configureButtonBindings() {
+    /*
+    driver1A.whileHeld(new SetVoltage(backRight, 6));
+    
+    driver1X.whileHeld(new SetVoltage(backRight, 7.5));
+    
+    driver1Y.whileHeld(new SetVoltage(backRight, 7));
+    
+    driver1B.whileHeld(new SetVoltage(backRight, 6.5));
+    */
+  }
+
+  public static double getXLeft() {
+    double input = driver1.getX(Hand.kLeft);
+    if(input < .075 && input > -.075){
+
 
     driver1A.toggleWhenPressed(new runIntake(intake));
     driver1B.toggleWhenPressed(new runHopper(hopper));
@@ -76,8 +93,8 @@ public class RobotContainer {
   }
 
   public static double getYLeft() {
-    double input = driver1.getY();
-    if (input < .075 && input > -.075) {
+    double input = driver1.getY(Hand.kLeft);
+    if(input < .075 && input > -.075){
       return 0;
     } else {
       return input;
@@ -85,8 +102,9 @@ public class RobotContainer {
   }
 
   public static double getXRight() {
-    double input = driver1.getZ();
-    if (input < .075 && input > -.075) {
+
+    double input = driver1.getX(Hand.kRight);
+    if(input < .2 && input > -.2){
       return 0;
     } else {
       return input;

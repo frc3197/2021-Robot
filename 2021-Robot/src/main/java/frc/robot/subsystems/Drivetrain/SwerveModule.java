@@ -8,131 +8,163 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.SwerveModuleConstants;
 
 public class SwerveModule extends SubsystemBase {
+// Measurments are all done in Meters.
 
-  private WPI_TalonFX angle_motor;
-  private WPI_TalonFX speed_motor;
 
-  // private double mLastTargetAngle;
-  private double mZeroOffset;
+  private static final double kModuleMaxAngularVelocity = SwerveDrive.maxAngleSpeed;
+  private static final double kModuleMaxAngularAcceleration = Math.pow((8 * Math.PI),2); // radians per second squared
 
-	
-  // Voltage cap
-  private double MAX_VOLTS;
+  private final WPI_TalonFX speed_motor;
+  private final WPI_TalonFX angle_motor;
+  
+  static int numModule = 0;
+  final int moduleNumber;
 
-  // Creates a PIDController for use in turning to an angle
-  private PIDController pidController;
-  // Creates an encoder for judging angle
-  private CANCoder encoder;
-  /**
-   * Creates a new WheelDrive.
-   */
-  public SwerveModule(int angleMotor, int speedMotor, int encoderID, int maxVoltage, boolean isInverted) {
+  private final CANCoder encoder;
+//TODO: Set Proper Constant Values: PID Drive Controller
+  private PIDController m_drivePIDController;
+
+  private final ProfiledPIDController m_turningPIDController;
+
+//TODO: Set Proper Constant Values: FeedForward Constants  
+  private final SimpleMotorFeedforward m_driveFeedforward;
+  private final SimpleMotorFeedforward m_turnFeedforward;
+
+  public SwerveModule(int angleMotor, int speedMotor, int encoderID, SwerveModuleConstants swerveModuleConstants) {
+    moduleNumber = numModule;
+    numModule++;
     angle_motor = new WPI_TalonFX(angleMotor);
     speed_motor = new WPI_TalonFX(speedMotor);
-    encoder = new CANCoder(encoderID);
-    pidController = new PIDController(Constants.PIDContants.swerveModule.p, Constants.PIDContants.swerveModule.i, Constants.PIDContants.swerveModule.d);
-    MAX_VOLTS = maxVoltage;
-    
 
-    pidController.setTolerance(5);
+    m_turningPIDController = new ProfiledPIDController(swerveModuleConstants.P_angle,0, swerveModuleConstants.D_angle,
+      new TrapezoidProfile.Constraints(kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
+
+    m_drivePIDController = new PIDController(swerveModuleConstants.P_drive, 0, swerveModuleConstants.D_drive);
+
+    m_driveFeedforward = new SimpleMotorFeedforward(swerveModuleConstants.kS_drive,swerveModuleConstants.kV_drive);
+    m_turnFeedforward = new SimpleMotorFeedforward(swerveModuleConstants.kS_angle,swerveModuleConstants.kV_angle);
+    encoder = new CANCoder(encoderID);
+  
+    angle_motor.configOpenloopRamp(.05);
+    speed_motor.configOpenloopRamp(.2);
     angle_motor.setNeutralMode(NeutralMode.Brake);
     speed_motor.setNeutralMode(NeutralMode.Brake);
+    m_turningPIDController.setTolerance(1);
+    m_drivePIDController.setTolerance(0);
+    m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
-    speed_motor.setInverted(isInverted);
-
-    speed_motor.configOpenloopRamp(0.25);
-    angle_motor.configOpenloopRamp(.05);
   }
 
   @Override
   public void periodic() {
+    
     // This method will be called once per scheduler run
   }
-  
-	public double getModuleAngleAbsolute(){
-  double currentAngle = encoder.getAbsolutePosition();
-  return currentAngle;
+
+  public double getRPM(){
+    return speed_motor.getSelectedSensorVelocity() / Constants.talonEncoderResolution * 10 * 60;
   }
 
-
-  // Absolute useless garbage
-
-	public double getModuleAngle(){
-    double currentAngle = encoder.getPosition() % 360;
-    return currentAngle;
-    }
-
-
-	
-  public void turnToAngle(double targetAngle){
-    double currentAngle = encoder.getAbsolutePosition();
- 		double delta = currentAngle - targetAngle;
- 		if (delta > 90 || delta < -90) {
- 			if (delta > 90)
- 				targetAngle += 180;
- 			else if (delta < -90){
- 				targetAngle -= 180;
- 			speed_motor.setInverted(false);
- 		} else {
- 			speed_motor.setInverted(true);
- 		}}
-	  
-		 // targetAngle += currentAngle - currentAngleMod;
-    // ALL OF THIS STUFF IS FOR DEALING WITH STALLING, SHOULD DISECT LATER 
-		// double currentError = angleMotor.getError();
-		// if (Math.abs(currentError - mLastError) < 7.5 &&
-		// 		Math.abs(currentAngle - targetAngle) > 5) {
-		// 	if (mStallTimeBegin == Long.MAX_VALUE) mStallTimeBegin = System.currentTimeMillis();
-		// 	if (System.currentTimeMillis() - mStallTimeBegin > STALL_TIMEOUT) {
-		// 		throw new MotorStallException(String.format("Angle motor on swerve module '%d' has stalled.",
-		// 				mModuleNumber));
-		// 	}
-		// } else {
-		// 	mStallTimeBegin = Long.MAX_VALUE;
-		// }
-		// mLastError = currentError;
-
-
-		pidController.setSetpoint(targetAngle);
-	}
-  
-  
-  
-  
-  
-  public void drive(double speed, double angle){
-// Sets the motor to the speed passed in, will be the wheelSpeeds calculated in the SwerveDriveSubsystem	  
-    speed_motor.set(speed);
-// Calculates the setpoint measurement
-    turnToAngle(angle);
-// Applies the calculated pidOutput using the encoder as a measurementSource
-  angle_motor.set(pidController.calculate(getModuleAngleAbsolute(), angle) * .2);
+  public double getSpeedEncoderRate(){
+    //Pulls the integrated sensor velocity
+    double driveUnitsPer100ms = angle_motor.getSelectedSensorVelocity();
+    // Converts the encoder rate to meters per second
+    double encoderRate = driveUnitsPer100ms / Constants.talonEncoderResolution * 10 * Constants.swerveWheelDiam * Constants.swerveDriveMotorGR;
+    return encoderRate;
   }
 
-
-
-  public void simpleDrive(double speed, double angle){
-    speed_motor.set(speed);
-    angle_motor.set(angle);
+  public double getAngleRadians(){
+    return Units.degreesToRadians(encoder.getAbsolutePosition());
   }
-  //public double getAnglePosition(){}
 
-public void resetEncoder() {
-  encoder.setPosition(0);
-}
+  public void resetDriveEncoder(){
+    speed_motor.setSelectedSensorPosition(0);
+  }
 
+  public void setVoltageSpeed(double voltage){
+    speed_motor.setVoltage(voltage);
+  }
 
-public WPI_TalonFX getSpeedMotor(){
-  return speed_motor;
-}
+ 
 
-  public void simpleTurnToAngle(double targetAngle){
-    angle_motor.set(pidController.calculate(getModuleAngle() * .2));
+  public SwerveModuleState getState(){
+    return new SwerveModuleState(getSpeedEncoderRate(),new Rotation2d(getAngleRadians()));
+  }
+
+  public SwerveModuleState optimize(
+    SwerveModuleState desiredState, Rotation2d currentAngle) {
+  var delta = desiredState.angle.minus(currentAngle);
+  if (Math.abs(delta.getDegrees()) > 90.0) {
+    return new SwerveModuleState(
+        -desiredState.speedMetersPerSecond,
+        desiredState.angle.rotateBy(Rotation2d.fromDegrees(180.0)));
+  } else {
+    return new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle);
   }
 }
 
+
+
+
+
+  public void setDesiredState(SwerveModuleState desiredState){
+
+    SwerveModuleState state =
+        optimize(desiredState, new Rotation2d(getAngleRadians()));
+
+    // Calculate the drive output from the drive PID controller.
+    final double driveOutput =
+        m_drivePIDController.calculate(getSpeedEncoderRate(), state.speedMetersPerSecond);
+
+    // Sending PID Effort to SmartDashbboard
+    SmartDashboard.putNumber("swerveModule " + moduleNumber + "/drivePIDEffort" , driveOutput);
+
+
+
+    final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
+
+    
+    // Sending FF Effort to SmartDashbboard
+    SmartDashboard.putNumber("swerveModule " + moduleNumber + "/driveFFEffort" , driveFeedforward);
+
+
+    // Calculate the turning motor output from the turning PID controller.
+    final double turnOutput =
+        m_turningPIDController.calculate(getAngleRadians(), state.angle.getRadians());
+
+    // Sending PID Effort to SmartDashbboard
+    SmartDashboard.putNumber("swerveModule " + moduleNumber + "/anglePIDEffort" , turnOutput);
+    SmartDashboard.putNumber("setPointVelocity", m_turningPIDController.getSetpoint().velocity);
+    SmartDashboard.putNumber("actualVelocity", getSpeedEncoderRate());
+    final double turnFeedforward =
+        m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
+
+    // Sending FF Effort to SmartDashbboard
+    SmartDashboard.putNumber("swerveModule " + moduleNumber + "/angleFFEffort" , turnFeedforward);
+    SmartDashboard.putNumber("Voltage Multiplier" , RobotController.getBatteryVoltage());
+
+    //speed_motor.setVoltage(0);
+
+    speed_motor.setVoltage((driveOutput + driveFeedforward) * RobotController.getBatteryVoltage());
+
+    //angle_motor.setVoltage(0);
+    angle_motor.setVoltage((turnOutput + turnFeedforward) * RobotController.getBatteryVoltage());
+    SmartDashboard.putNumber("Angle Motor Voltage", (turnOutput + turnFeedforward) * RobotController.getBatteryVoltage());
+  }
+
+
+}
