@@ -14,6 +14,8 @@ import frc.robot.commands.Drive;
 import frc.robot.commands.DriveOneMod;
 import frc.robot.commands.SwerveToAngle;
 import frc.robot.commands.runIntake;
+import frc.robot.commands.runHopper;
+import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Drivetrain.SwerveDrive;
@@ -28,24 +30,25 @@ public class RobotContainer {
   private JoystickButton driver1Y = new JoystickButton(driver1, 4);
   private JoystickButton driver1B = new JoystickButton(driver1, 3);
 
-
   public static SwerveModule backLeft = new SwerveModule(Constants.TalonID.kSwerveBLAngle.id,
-      Constants.TalonID.kSwerveBLSpeed.id, Constants.CANDevices.kCANCoderBL.id, Constants.SWERVE_MAX_VOLTS,false);
+      Constants.TalonID.kSwerveBLSpeed.id, Constants.CANDevices.kCANCoderBL.id, Constants.SWERVE_MAX_VOLTS, false);
   public static SwerveModule backRight = new SwerveModule(Constants.TalonID.kSwerveBRAngle.id,
-      Constants.TalonID.kSwerveBRSpeed.id, Constants.CANDevices.kCANCoderBR.id, Constants.SWERVE_MAX_VOLTS,true);
+      Constants.TalonID.kSwerveBRSpeed.id, Constants.CANDevices.kCANCoderBR.id, Constants.SWERVE_MAX_VOLTS, true);
   public static SwerveModule frontLeft = new SwerveModule(Constants.TalonID.kSwerveFLAngle.id,
-      Constants.TalonID.kSwerveFLSpeed.id, Constants.CANDevices.kCANCoderFL.id, Constants.SWERVE_MAX_VOLTS,false);
+      Constants.TalonID.kSwerveFLSpeed.id, Constants.CANDevices.kCANCoderFL.id, Constants.SWERVE_MAX_VOLTS, false);
   public static SwerveModule frontRight = new SwerveModule(Constants.TalonID.kSwerveFRAngle.id,
-      Constants.TalonID.kSwerveFRSpeed.id, Constants.CANDevices.kCANCoderFR.id, Constants.SWERVE_MAX_VOLTS,true);
+      Constants.TalonID.kSwerveFRSpeed.id, Constants.CANDevices.kCANCoderFR.id, Constants.SWERVE_MAX_VOLTS, true);
 
   public static SwerveDrive swerveDrive = new SwerveDrive(backRight, backLeft, frontRight, frontLeft);
+
+  public static Hopper hopper = new Hopper(0);
 
   public static Intake intake = new Intake();
 
   public static Shooter shooter = new Shooter();
 
   public RobotContainer() {
-  
+
     swerveDrive.setDefaultCommand(new Drive(swerveDrive));
 
     driver1.setXChannel(0);
@@ -54,44 +57,41 @@ public class RobotContainer {
 
     configureButtonBindings();
 
-    
   }
 
   private void configureButtonBindings() {
-    driver1A.whenPressed(new SwerveToAngle(swerveDrive, 0));
-    driver1X.whenPressed(new SwerveToAngle(swerveDrive, 90));
-    driver1Y.whenPressed(new SwerveToAngle(swerveDrive, 180));
-    driver1B.whenPressed(new SwerveToAngle(swerveDrive, 90));
 
-    intakeButton.toggleWhenPressed(new runIntake(intake));
+    driver1A.toggleWhenPressed(new runIntake(intake));
+    driver1B.toggleWhenPressed(new runHopper(hopper));
+    configureButtonBindings();
   }
 
   public static double getXLeft() {
     double input = driver1.getX();
-    if(input < .075 && input > -.075){
+    if (input < .075 && input > -.075) {
       return 0;
+    } else {
+      return input;
     }
-    else{
-    return input;}
   }
 
   public static double getYLeft() {
     double input = driver1.getY();
-    if(input < .075 && input > -.075){
+    if (input < .075 && input > -.075) {
       return 0;
+    } else {
+      return input;
     }
-    else{
-    return input;}
   }
 
   public static double getXRight() {
     double input = driver1.getZ();
-    if(input < .075 && input > -.075){
+    if (input < .075 && input > -.075) {
       return 0;
+    } else {
+      return input;
     }
-    else{
-    return input;}
-      
+  }
 
   public JoystickButton intakeButton = new JoystickButton(driver1, 3);
   /*
