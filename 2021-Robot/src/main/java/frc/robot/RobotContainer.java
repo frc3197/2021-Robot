@@ -5,9 +5,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Drive;
+import frc.robot.commands.beamBreak;
 import frc.robot.commands.runHopper;
 import frc.robot.commands.runIntake;
 import frc.robot.subsystems.Hopper;
@@ -47,16 +50,19 @@ public class RobotContainer {
 
   public static Shooter shooter = new Shooter();
 
+  public static DigitalInput beamBreakInp = new DigitalInput(0);
   public RobotContainer() {
 
     swerveDrive.setDefaultCommand(new Drive(swerveDrive));
-
+    hopper.setDefaultCommand(new runHopper(hopper));
+    CommandScheduler.getInstance().schedule(new beamBreak(beamBreakInp));
 
     configureButtonBindings();
 
   }
 
   private void configureButtonBindings() {
+    driver1A.toggleWhenPressed(new runIntake(intake));
     /*
     driver1A.whileHeld(new SetVoltage(backRight, 6));
     
