@@ -21,8 +21,8 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    SwerveDrive.gyro.calibrate();
-    SwerveDrive.gyro.reset();
+    //SwerveDrive.gyro.calibrate();
+    //SwerveDrive.gyro.reset();
   }
 
   /**

@@ -27,13 +27,16 @@ public class RobotContainer {
   
 
   public static SwerveModule backLeft = new SwerveModule(Constants.TalonID.kSwerveBLAngle.id,
-      Constants.TalonID.kSwerveBLSpeed.id, Constants.CANDevices.kCANCoderBL.id);
+      Constants.TalonID.kSwerveBLSpeed.id, Constants.CANDevices.kCANCoderBL.id, Constants.DriveConstants.backLeftConstants);
+
   public static SwerveModule backRight = new SwerveModule(Constants.TalonID.kSwerveBRAngle.id,
-      Constants.TalonID.kSwerveBRSpeed.id, Constants.CANDevices.kCANCoderBR.id);
+      Constants.TalonID.kSwerveBRSpeed.id, Constants.CANDevices.kCANCoderBR.id, Constants.DriveConstants.backRightConstants);
+
   public static SwerveModule frontLeft = new SwerveModule(Constants.TalonID.kSwerveFLAngle.id,
-      Constants.TalonID.kSwerveFLSpeed.id, Constants.CANDevices.kCANCoderFL.id);
+      Constants.TalonID.kSwerveFLSpeed.id, Constants.CANDevices.kCANCoderFL.id,Constants.DriveConstants.frontLeftConstants);
+
   public static SwerveModule frontRight = new SwerveModule(Constants.TalonID.kSwerveFRAngle.id,
-      Constants.TalonID.kSwerveFRSpeed.id, Constants.CANDevices.kCANCoderFR.id);
+      Constants.TalonID.kSwerveFRSpeed.id, Constants.CANDevices.kCANCoderFR.id, Constants.DriveConstants.frontRightConstants);
 
   public static SwerveDrive swerveDrive = new SwerveDrive(backRight, backLeft, frontRight, frontLeft);
 
@@ -49,6 +52,15 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
+    /*
+    driver1A.whileHeld(new SetVoltage(backRight, 6));
+    
+    driver1X.whileHeld(new SetVoltage(backRight, 7.5));
+    
+    driver1Y.whileHeld(new SetVoltage(backRight, 7));
+    
+    driver1B.whileHeld(new SetVoltage(backRight, 6.5));
+    */
   }
 
   public static double getXLeft() {
@@ -71,7 +83,7 @@ public class RobotContainer {
 
   public static double getXRight() {
     double input = driver1.getX(Hand.kRight);
-    if(input < .075 && input > -.075){
+    if(input < .2 && input > -.2){
       return 0;
     }
     else{

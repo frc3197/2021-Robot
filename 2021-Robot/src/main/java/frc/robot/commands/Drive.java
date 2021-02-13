@@ -16,8 +16,8 @@ public class Drive extends CommandBase {
 
   private boolean fieldRelative = false;
 
-  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(16.2);
-  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(16.2);
+  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(4);
+  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(4);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(20);
 
 
@@ -48,14 +48,14 @@ public class Drive extends CommandBase {
       // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
      var xSpeed =
-        -m_xspeedLimiter.calculate(x1)
+        m_xspeedLimiter.calculate(y1)
             * SwerveDrive.maxSpeed;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
      var ySpeed =
-        -m_yspeedLimiter.calculate(y1)
+        -m_yspeedLimiter.calculate(x1)
             * SwerveDrive.maxSpeed;
 
     // Get the rate of angular rotation. We are inverting this because we want a

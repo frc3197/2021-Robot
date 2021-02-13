@@ -56,10 +56,10 @@ public final class Constants {
     public static final double swerveWheelDiam = Units.inchesToMeters(4);
     public static final double swerveDriveMotorGR = 6.86;
     // This could be 6 or 6.2
-	public static final double angleFeedForwardkV = 0.0507411197755;
+	public static final double angleFeedForwardkV = 0;
 
     public static enum PIDContants {
-        swerveSpeed("swerveSpeed",0.02,.5,0,0),swerveAnge("swerveAngle",.2,0,.003,0);
+        swerveSpeed("swerveSpeed",0.02,.5,0,0),swerveAnge("swerveAngle",0,0,0,0);
 
         public final String name;
         public final double p;
@@ -79,14 +79,28 @@ public final class Constants {
         // Module 1: Speed 0, Angle 1, Encoder 0 - Back Right
 // Module 2: Speed 2, Angle 3, Encoder 1 - Back Left
 // Module 3: Speed 4, Angle 5, Encoder 2 - Front Left
-// Module 4: Speed 6, Angle 7, Encoder 3 - Front Right
-public final SwerveModuleConstants frontRightConstants = new SwerveModuleConstants(7, 6, 3, .8,  0.0019405125737, 0, 0);
+// Module 4: Speed 6, Angle 7, Encoder 3 - Front Right    
+//0.0122631851627                          
+public final static SwerveModuleConstants frontRightConstants = new SwerveModuleConstants
 
-public final SwerveModuleConstants backRightConstants = new SwerveModuleConstants(1, 0, 0, .8,  0.0019405125737, 0, 0);
+(7, 6, 3, 
+.07,  0.0122631851627   , .0325, 0.00,
+ 0.2, 0.0190285356420, 0, 0);
 
-public final SwerveModuleConstants frontLeftConstants = new SwerveModuleConstants(5, 4, 2, .8,  0.0019405125737, 0, 0);
+public final static SwerveModuleConstants backRightConstants = new SwerveModuleConstants
+(1, 0, 0,
+.07,0.0122631851627   , .0325, 0.00, 
+ 0.2, 0.0174386190803, 0, 0);
 
-public final SwerveModuleConstants backLeftConstants = new SwerveModuleConstants(3, 2, 1, .8,  0.0019405125737, 0, 0);
+public final static SwerveModuleConstants frontLeftConstants = new SwerveModuleConstants
+(5, 4, 2,
+.07,  0.0122631851627   , .0325, 0.00,
+ 0.2, 0.0190626376654, 0, 0);
+
+public final static SwerveModuleConstants backLeftConstants = new SwerveModuleConstants
+(3, 2, 1, 
+.07,  0.0122631851627 , .0325, 0.00,
+ 0.2, 0.0165160964636, 0, 0);
 
 
 }
