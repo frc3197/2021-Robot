@@ -85,22 +85,22 @@ public final static SwerveModuleConstants frontRightConstants = new SwerveModule
 
 (7, 6, 3, 
 .07,  0.0122631851627   , .0325, 0.00,
- 0.2, 0.0190285356420, 0, 0);
+ 0.4, 0.0190285356420, 0, 0);
 
 public final static SwerveModuleConstants backRightConstants = new SwerveModuleConstants
 (1, 0, 0,
 .07,0.0122631851627   , .0325, 0.00, 
- 0.2, 0.0174386190803, 0, 0);
+ 0.4, 0.0174386190803, 0, 0);
 
 public final static SwerveModuleConstants frontLeftConstants = new SwerveModuleConstants
 (5, 4, 2,
 .07,  0.0122631851627   , .0325, 0.00,
- 0.2, 0.0190626376654, 0, 0);
+ 0.4, 0.0190626376654, 0, 0);
 
 public final static SwerveModuleConstants backLeftConstants = new SwerveModuleConstants
 (3, 2, 1, 
 .07,  0.0122631851627 , .0325, 0.00,
- 0.2, 0.0165160964636, 0, 0);
+ 0.4, 0.0165160964636, 0, 0);
 
 
 }

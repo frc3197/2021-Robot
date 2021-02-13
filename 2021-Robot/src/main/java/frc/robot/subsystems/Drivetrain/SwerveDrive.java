@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive implements Subsystem {
     public static double maxSpeed = Units.feetToMeters(16.2);
-    public static double maxAngleSpeed = 2*Math.PI;
+    public static double maxAngleSpeed = 3*Math.PI;
 
     // Translation from the center of the bot, distance of the wheels to the center.
     private final Translation2d m_frontLeftLocation = new Translation2d(0.314,0.301);

@@ -41,7 +41,7 @@ public class Drive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    x1 = RobotContainer.getXLeft();
+    x1 = -RobotContainer.getXLeft();
     x2 = RobotContainer.getXRight();
     y1 = RobotContainer.getYLeft();
   
