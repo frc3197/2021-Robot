@@ -25,7 +25,7 @@ public final class Constants {
         // Module 4: Speed 6, Angle 7, Encoder 3 - Front Right
         kSwerveBLAngle(3, "BackLeftAngle"), kSwerveBLSpeed(2, "BackLeftSpeed"), kSwerveBRSpeed(0, "BackRightSpeed"),
         kSwerveBRAngle(1, "BackRightAngle"), kSwerveFRAngle(7, "FrontRightAngle"), kSwerveFLAngle(5, "FrontLeftAngle"),
-        kSwerveFRSpeed(6, "FrontRightSpeed"), kSwerveFLSpeed(4, "FrontLeftSpeed");
+        kSwerveFRSpeed(6, "FrontRightSpeed"), kSwerveFLSpeed(4, "FrontLeftSpeed"), kLifterMotor(8, "LifterMotor");
 
         public final int id;
         public final String name;
@@ -62,6 +62,19 @@ public final class Constants {
 
     public static final int beamBreakInput = 0;
     public static final int beamBreakOutput = 1;
+
+    public static enum CANSparkMaxID {
+        agitatorMotor("agitatorMotor",0),intakeMotor("intakeMotor",1);
+
+        public final String name;
+        public final int id;
+
+        private CANSparkMaxID(String name, int id){
+            this.name = name;
+            this.id = id;
+        }
+    }
+
 
     public static enum PIDContants {
         swerveModule("swerveModules", .042, .003, 0, 0);

@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
 
 public class runIntake extends CommandBase {
@@ -23,12 +24,14 @@ public class runIntake extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    Hopper.count++;
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+
     intake.setIntake(1);
     
   }
@@ -38,7 +41,7 @@ public class runIntake extends CommandBase {
   public void end(boolean interrupted) {
 
     intake.setIntake(0);
-
+    Hopper.count--;
   }
 
   // Returns true when the command should end.

@@ -4,16 +4,12 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Drive;
-import frc.robot.commands.SetVoltage;
-import frc.robot.commands.DriveOneMod;
-import frc.robot.commands.SwerveToAngle;
-import frc.robot.commands.runIntake;
 import frc.robot.commands.runHopper;
+import frc.robot.commands.runIntake;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -28,7 +24,6 @@ public class RobotContainer {
   private JoystickButton driver1A = new JoystickButton(driver1, 1);
   private JoystickButton driver1X = new JoystickButton(driver1, 3);
   private JoystickButton driver1Y = new JoystickButton(driver1, 4);
-
   private JoystickButton driver1B = new JoystickButton(driver1, 2);
   
 
@@ -46,9 +41,9 @@ public class RobotContainer {
 
   public static SwerveDrive swerveDrive = new SwerveDrive(backRight, backLeft, frontRight, frontLeft);
 
-  public static Hopper hopper = new Hopper(0);
+  public static Hopper hopper = new Hopper(Constants.TalonID.kLifterMotor.id, Constants.CANSparkMaxID.agitatorMotor.id);
 
-  public static Intake intake = new Intake();
+  public static Intake intake = new Intake(Constants.CANSparkMaxID.intakeMotor.id);
 
   public static Shooter shooter = new Shooter();
 
@@ -73,15 +68,7 @@ public class RobotContainer {
     */
   }
 
-  public static double getXLeft() {
-    double input = driver1.getX(Hand.kLeft);
-    if(input < .075 && input > -.075){
 
-
-    driver1A.toggleWhenPressed(new runIntake(intake));
-    driver1B.toggleWhenPressed(new runHopper(hopper));
-    configureButtonBindings();
-  }
 
   public static double getXLeft() {
     double input = driver1.getX();
@@ -110,8 +97,6 @@ public class RobotContainer {
       return input;
     }
   }
-
-  public JoystickButton intakeButton = new JoystickButton(driver1, 3);
   /*
    * public Command getAutonomousCommand() {
    * 

@@ -9,18 +9,20 @@ import frc.robot.Constants;
 
 import org.photonvision.PhotonCamera;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 
 
 public class Intake extends SubsystemBase {
 
-  WPI_TalonFX intakeMotor;
+  CANSparkMax intakeMotor;
   
   PhotonCamera camera = new PhotonCamera("intakeCam");
   /** Creates a new Intake. */
-  public Intake() {
+  public Intake(int intakeID) {
 
-    intakeMotor = new WPI_TalonFX(Constants.intakeMotor);
+    intakeMotor = new CANSparkMax(intakeID,MotorType.kBrushless);
 
   }
 

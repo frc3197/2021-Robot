@@ -5,17 +5,22 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.CANSparkMaxID;
 
 public class Hopper extends SubsystemBase {
-  CANSparkMax hopperMotor;
+  WPI_TalonFX hopperMotor;
+  CANSparkMax agitatorMotor;
   public static int count = 0;
 
   /** Creates a new Hopper. */
-  public Hopper(int hopperCANID) {
-    hopperMotor = new CANSparkMax(hopperCANID);
-
+  public Hopper(int lifterCANID, int agitatorCANID) {
+    hopperMotor = new WPI_TalonFX(lifterCANID);
+    agitatorMotor = new CANSparkMax(agitatorCANID, MotorType.kBrushless);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
