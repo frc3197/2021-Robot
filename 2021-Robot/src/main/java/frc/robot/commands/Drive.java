@@ -14,7 +14,7 @@ public class Drive extends CommandBase {
   
   private final SwerveDrive m_swerve;
 
-  private boolean fieldRelative = false;
+  private boolean fieldRelative = true;
 
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(4);
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(4);
@@ -42,7 +42,7 @@ public class Drive extends CommandBase {
   @Override
   public void execute() {
     x1 = -RobotContainer.getXLeft();
-    x2 = RobotContainer.getXRight();
+    x2 = -RobotContainer.getXRight();
     y1 = RobotContainer.getYLeft();
   
       // Get the x speed. We are inverting this because Xbox controllers return

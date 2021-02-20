@@ -5,44 +5,34 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.subsystems.Hopper;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.Shooter;
 
-public class runHopper extends CommandBase {
-  private double lifterMult = Constants.MotorOutputMultiplier.lifter.multiplier;
-  private double agitatorMult = Constants.MotorOutputMultiplier.agitator.multiplier;
-  private Hopper hopper;
-
-  /** Creates a new runHopper. */
-  public runHopper(Hopper hopper) {
-    this.hopper = hopper;
+public class shoot extends CommandBase {
+  Shooter shooter;
+  /** Creates a new shoot. */
+  public shoot(Shooter shooter ) {
+    this.shooter = shooter;
+    addRequirements(shooter);
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(hopper);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    if (Hopper.count % 2 == 1) {
-      hopper.sethopperMotor(1 * lifterMult);
-      hopper.setAgitatorMotor(1 * agitatorMult);
-    } else {
-      hopper.sethopperMotor(0);
-      hopper.setAgitatorMotor(0);
-    }
+    double speed = RobotContainer.getRightTriggerD2();
+    shooter.setAllMotors(speed);
 
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    shooter.setAllMotors(0);
   }
 
   // Returns true when the command should end.
@@ -50,5 +40,4 @@ public class runHopper extends CommandBase {
   public boolean isFinished() {
     return false;
   }
-
 }

@@ -4,10 +4,12 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.CANSparkMaxID;
@@ -20,6 +22,7 @@ public class Hopper extends SubsystemBase {
   /** Creates a new Hopper. */
   public Hopper(int lifterCANID, int agitatorCANID) {
     hopperMotor = new WPI_TalonFX(lifterCANID);
+    hopperMotor.setNeutralMode(NeutralMode.Brake);
     agitatorMotor = new CANSparkMax(agitatorCANID, MotorType.kBrushless);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -28,7 +31,12 @@ public class Hopper extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Counter", count);
     // This method will be called once per scheduler run
+  }
+
+  public void setAgitatorMotor(double speed){
+    agitatorMotor.set(speed);
   }
 
   public void sethopperMotor(double speed) {

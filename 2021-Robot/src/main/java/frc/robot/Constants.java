@@ -25,7 +25,8 @@ public final class Constants {
         // Module 4: Speed 6, Angle 7, Encoder 3 - Front Right
         kSwerveBLAngle(3, "BackLeftAngle"), kSwerveBLSpeed(2, "BackLeftSpeed"), kSwerveBRSpeed(0, "BackRightSpeed"),
         kSwerveBRAngle(1, "BackRightAngle"), kSwerveFRAngle(7, "FrontRightAngle"), kSwerveFLAngle(5, "FrontLeftAngle"),
-        kSwerveFRSpeed(6, "FrontRightSpeed"), kSwerveFLSpeed(4, "FrontLeftSpeed"), kLifterMotor(8, "LifterMotor");
+        kSwerveFRSpeed(6, "FrontRightSpeed"), kSwerveFLSpeed(4, "FrontLeftSpeed"), kLifterMotor(8, "LifterMotor"), kHoodMotor(9,"HoodMotor"), kShooter1(10,"Shooter1Motor"),
+        kShooter2(11,"Shooter2Motor"),kShooter3(12,"Shooter3Motor");
 
         public final int id;
         public final String name;
@@ -49,22 +50,8 @@ public final class Constants {
         }
     }
 
-    public static final double L = 23.75;
-    public static final double W = 24.75;
-    public static final int SWERVE_MAX_VOLTS = 0;
-
-    public static final int talonEncoderResolution = 2048;
-    public static final double swerveWheelDiam = Units.inchesToMeters(4);
-    public static final double swerveDriveMotorGR = 6.86;
-    // This could be 6 or 6.2
-	public static final double angleFeedForwardkV = 0;
-    public static int intakeMotor = 10;
-
-    public static final int beamBreakInput = 0;
-    public static final int beamBreakOutput = 1;
-
     public static enum CANSparkMaxID {
-        agitatorMotor("agitatorMotor",0),intakeMotor("intakeMotor",1);
+        agitatorMotor("agitatorMotor",2),intakeMotor("intakeMotor",1);
 
         public final String name;
         public final int id;
@@ -75,25 +62,17 @@ public final class Constants {
         }
     }
 
+    public static enum MotorOutputMultiplier {
+        lifter(.3),intake(-.9),agitator(-1);
 
-    public static enum PIDContants {
-        swerveModule("swerveModules", .042, .003, 0, 0);
-
-
-        public final String name;
-        public final double p;
-        public final double i;
-        public final double d;
-        public final double f;
-
-        private PIDContants(String name, double p, double i, double d, double f) {
-            this.name = name;
-            this.p = p;
-            this.i = i;
-            this.d = d;
-            this.f = f;
+        public final double multiplier;
+        private MotorOutputMultiplier(double multiplier){
+            this.multiplier = multiplier;
         }
     }
+
+
+
     public static class DriveConstants{
         // Module 1: Speed 0, Angle 1, Encoder 0 - Back Right
 // Module 2: Speed 2, Angle 3, Encoder 1 - Back Left
@@ -103,24 +82,31 @@ public final class Constants {
 public final static SwerveModuleConstants frontRightConstants = new SwerveModuleConstants
 
 (7, 6, 3, 
-.07,  0.0122631851627   , .0325, 0.00,
- 0.4, 0.0190285356420, 0, 0);
+.09,  0.0126346014719 , 0.45, 0.004, // ANGLE MOTOR
+ 0.2, 0.0181327809871 * 2, 0.005, 0.00); // SPEED MOTOR
 
 public final static SwerveModuleConstants backRightConstants = new SwerveModuleConstants
 (1, 0, 0,
-.07,0.0122631851627   , .0325, 0.00, 
- 0.4, 0.0174386190803, 0, 0);
+.09,0.0137420579420 , 0.45, 0.004
+, 
+ 0.2, 0.0210286008586 * 2, 0.005, 0.00);
 
 public final static SwerveModuleConstants frontLeftConstants = new SwerveModuleConstants
 (5, 4, 2,
-.07,  0.0122631851627   , .0325, 0.00,
- 0.4, 0.0190626376654, 0, 0);
+.09, 0.0126346014719 , 0.45, 0.004,
+ 0.2,0.0181327809871 * 2, 0.005, 0.00);
 
 public final static SwerveModuleConstants backLeftConstants = new SwerveModuleConstants
 (3, 2, 1, 
-.07,  0.0122631851627 , .0325, 0.00,
- 0.4, 0.0165160964636, 0, 0);
+.09, 0.0137420579420 , 0.45, 0.004,
+ 0.2, 0.0210286008586 * 2, 0.005, 0.0);
 
 
 }
+
+public static final int talonEncoderResolution = 2048;
+public static final double swerveWheelDiam = Units.inchesToMeters(4);
+public static final double swerveDriveMotorGR = 6.86;
+// This could be 6 or 6.2
+
 }

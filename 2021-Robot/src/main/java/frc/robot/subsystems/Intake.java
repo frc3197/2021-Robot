@@ -21,9 +21,7 @@ public class Intake extends SubsystemBase {
   PhotonCamera camera = new PhotonCamera("intakeCam");
   /** Creates a new Intake. */
   public Intake(int intakeID) {
-
     intakeMotor = new CANSparkMax(intakeID,MotorType.kBrushless);
-
   }
 
   @Override

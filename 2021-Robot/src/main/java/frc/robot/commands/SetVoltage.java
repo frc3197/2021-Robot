@@ -6,13 +6,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Drivetrain.SwerveDrive;
 import frc.robot.subsystems.Drivetrain.SwerveModule;
 
 public class SetVoltage extends CommandBase {
-  SwerveModule swerve;
+  SwerveDrive swerve;
   double voltage;
   /** Creates a new SetVoltage. */
-  public SetVoltage(SwerveModule swerve, double voltage) {
+  public SetVoltage(SwerveDrive swerve, double voltage) {
     this.swerve = swerve;
     this.voltage = voltage;
     addRequirements(swerve);
@@ -26,14 +27,18 @@ public class SetVoltage extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    swerve.setVoltageSpeed(voltage);
-    SmartDashboard.putNumber("SetVoltage", swerve.getRPM());
+    swerve.setVoltageAllMotors(voltage);
+    SmartDashboard.putNumber("SetVoltage BL", swerve.m_backLeft.getRPM());
+    SmartDashboard.putNumber("SetVoltage BR", swerve.m_backRight.getRPM());
+    SmartDashboard.putNumber("SetVoltage FL", swerve.m_frontLeft.getRPM());
+    SmartDashboard.putNumber("SetVoltage FR", swerve.m_frontRight.getRPM());
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    swerve.setVoltageSpeed(0);
+    swerve.setVoltageAllMotors(0);
   }
 
   // Returns true when the command should end.

@@ -13,14 +13,16 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive implements Subsystem {
-    public static double maxSpeed = Units.feetToMeters(16.2);
+    public static double maxSpeed = Units.feetToMeters(20);
     public static double maxAngleSpeed = 3*Math.PI;
-
+    
+    private double x = Units.inchesToMeters(22 / 2);
+    private double y = Units.inchesToMeters(26.125 / 2);
     // Translation from the center of the bot, distance of the wheels to the center.
-    private final Translation2d m_frontLeftLocation = new Translation2d(0.314,0.301);
-    private final Translation2d m_frontRightLocation = new Translation2d(0.314,-0.301);
-    private final Translation2d m_backLeftLocation = new Translation2d(-0.314,0.301);
-    private final Translation2d m_backRightLocation = new Translation2d(-0.314,-0.301);
+    private final Translation2d m_frontLeftLocation = new Translation2d(x,y);
+    private final Translation2d m_frontRightLocation = new Translation2d(x,-y);
+    private final Translation2d m_backLeftLocation = new Translation2d(-x,y);
+    private final Translation2d m_backRightLocation = new Translation2d(-x,-y);
 
     // Creates 4 SwerveModule Objects
     public final SwerveModule m_frontRight;
@@ -86,6 +88,12 @@ public void periodic() {
         m_backRight.resetDriveEncoder();
     }
 
+    public void setVoltageAllMotors(double speed){
+m_frontLeft.setVoltageSpeed(speed);        
+m_frontRight.setVoltageSpeed(speed);
+m_backLeft.setVoltageSpeed(speed);
+m_backRight.setVoltageSpeed(speed);
 
+    }
 
 }

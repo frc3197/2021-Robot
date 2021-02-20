@@ -33,7 +33,6 @@ public class SwerveModule extends SubsystemBase {
   
   static int numModule = 0;
   final int moduleNumber;
-
   private final CANCoder encoder;
 //TODO: Set Proper Constant Values: PID Drive Controller
   private PIDController m_drivePIDController;
@@ -44,13 +43,15 @@ public class SwerveModule extends SubsystemBase {
   private final SimpleMotorFeedforward m_driveFeedforward;
   private final SimpleMotorFeedforward m_turnFeedforward;
 
-  public SwerveModule(int angleMotor, int speedMotor, int encoderID, SwerveModuleConstants swerveModuleConstants) {
+  public SwerveModule(int angleMotor, int speedMotor, int encoderID, SwerveModuleConstants swerveModuleConstants , boolean angleInverted, boolean speedInverted) {
     moduleNumber = numModule;
     numModule++;
     angle_motor = new WPI_TalonFX(angleMotor);
     speed_motor = new WPI_TalonFX(speedMotor);
 
-    m_turningPIDController = new ProfiledPIDController(swerveModuleConstants.P_angle,0, swerveModuleConstants.D_angle,
+
+
+    m_turningPIDController = new ProfiledPIDController(swerveModuleConstants.P_angle,.3, swerveModuleConstants.D_angle,
       new TrapezoidProfile.Constraints(kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
 
     m_drivePIDController = new PIDController(swerveModuleConstants.P_drive, 0, swerveModuleConstants.D_drive);
@@ -60,11 +61,14 @@ public class SwerveModule extends SubsystemBase {
     encoder = new CANCoder(encoderID);
   
     angle_motor.configOpenloopRamp(.05);
-    speed_motor.configOpenloopRamp(.2);
+    speed_motor.configOpenloopRamp(.05);
     angle_motor.setNeutralMode(NeutralMode.Brake);
     speed_motor.setNeutralMode(NeutralMode.Brake);
-    m_turningPIDController.setTolerance(1);
-    m_drivePIDController.setTolerance(0);
+
+    angle_motor.setInverted(angleInverted);
+    speed_motor.setInverted(speedInverted);
+    m_turningPIDController.setTolerance(0);
+    m_drivePIDController.setTolerance(3);
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
   }

@@ -4,48 +4,34 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Hood;
 
-public class beamBreak extends CommandBase {
-  /** Creates a new beamBreak. */
-  static boolean beamBroken;
-  boolean alreadyAdded = false;
-
-  DigitalInput input;
-  
-
-  public beamBreak(DigitalInput input){
-  
-  this.input = input;
+public class moveHood extends CommandBase {
+  Hood hood;
+  double speed;
+  /** Creates a new moveHood. */
+  public moveHood(Hood hood, double speed) {
+    this.hood = hood;
+    this.speed = speed;
+    addRequirements(hood);
+    // Use addRequirements() here to declare subsystem dependencies.
   }
+
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    beamBroken = input.get();
-
-    if (beamBroken == true) {
-      Hopper.count += 1;
-      alreadyAdded = true;
-    } else if (alreadyAdded && !beamBroken) {
-      Hopper.count -= 1;
-    } else {
-    }
+    hood.setHood(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
+    hood.setHood(0);
   }
 
   // Returns true when the command should end.
