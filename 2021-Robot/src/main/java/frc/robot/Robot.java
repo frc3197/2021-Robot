@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,6 +20,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
+    CameraServer.getInstance().startAutomaticCapture();
+
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
@@ -86,7 +90,6 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     RobotContainer.swerveDrive.resetEncoders();
     RobotContainer.swerveDrive.resetGyro();
-    Hopper.count = 0;
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to

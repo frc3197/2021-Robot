@@ -31,15 +31,14 @@ public class SwerveModule extends SubsystemBase {
   private final WPI_TalonFX speed_motor;
   private final WPI_TalonFX angle_motor;
   
+  private SwerveModuleConstants swerveModuleConstants;
   static int numModule = 0;
   final int moduleNumber;
   private final CANCoder encoder;
-//TODO: Set Proper Constant Values: PID Drive Controller
   private PIDController m_drivePIDController;
 
   private final ProfiledPIDController m_turningPIDController;
 
-//TODO: Set Proper Constant Values: FeedForward Constants  
   private final SimpleMotorFeedforward m_driveFeedforward;
   private final SimpleMotorFeedforward m_turnFeedforward;
 
@@ -48,7 +47,7 @@ public class SwerveModule extends SubsystemBase {
     numModule++;
     angle_motor = new WPI_TalonFX(angleMotor);
     speed_motor = new WPI_TalonFX(speedMotor);
-
+    this.swerveModuleConstants = swerveModuleConstants;
 
 
     m_turningPIDController = new ProfiledPIDController(swerveModuleConstants.P_angle,.3, swerveModuleConstants.D_angle,
@@ -103,7 +102,9 @@ public class SwerveModule extends SubsystemBase {
     speed_motor.setVoltage(voltage);
   }
 
- 
+  public SwerveModuleConstants getConstants(){
+    return swerveModuleConstants;
+  }
 
   public SwerveModuleState getState(){
     return new SwerveModuleState(getSpeedEncoderRate(),new Rotation2d(getAngleRadians()));

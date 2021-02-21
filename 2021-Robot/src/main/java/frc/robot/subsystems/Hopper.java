@@ -16,14 +16,11 @@ import frc.robot.Constants.CANSparkMaxID;
 
 public class Hopper extends SubsystemBase {
   WPI_TalonFX hopperMotor;
-  CANSparkMax agitatorMotor;
-  public static int count = 0;
-
+  
   /** Creates a new Hopper. */
   public Hopper(int lifterCANID, int agitatorCANID) {
     hopperMotor = new WPI_TalonFX(lifterCANID);
     hopperMotor.setNeutralMode(NeutralMode.Brake);
-    agitatorMotor = new CANSparkMax(agitatorCANID, MotorType.kBrushless);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -31,13 +28,9 @@ public class Hopper extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Counter", count);
     // This method will be called once per scheduler run
   }
 
-  public void setAgitatorMotor(double speed){
-    agitatorMotor.set(speed);
-  }
 
   public void sethopperMotor(double speed) {
     hopperMotor.set(speed);

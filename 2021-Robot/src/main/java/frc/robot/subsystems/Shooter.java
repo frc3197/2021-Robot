@@ -7,21 +7,32 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 /** Add your docs here. */
 public class Shooter extends SubsystemBase {
   private WPI_TalonFX shooter1,shooter2,shooter3;
+  private PIDController shooterPID = new PIDController(Constants.shooter_P, 0, Constants.shooter_D);
+  private SimpleMotorFeedforward shooterFF = new SimpleMotorFeedforward(Constants.shooter_kS, Constants.shooter_kV, Constants.shooter_kA);
 
   public Shooter(int shooter1,int shooter2, int shooter3){
-   this.shooter1 = new WPI_TalonFX(shooter1);
-this.shooter2 = new WPI_TalonFX(shooter2);
+    this.shooter1 = new WPI_TalonFX(shooter1);
+    this.shooter2 = new WPI_TalonFX(shooter2);
     this.shooter3 = new WPI_TalonFX(shooter3);
 
   
-this.shooter1.configOpenloopRamp(.5);
-this.shooter2.configOpenloopRamp(.5);
-    this.shooter3.configOpenloopRamp(.5);
+    this.shooter1.configOpenloopRamp(1.5);
+    this.shooter2.configOpenloopRamp(1.5);
+    this.shooter3.configOpenloopRamp(1.5);
+
+    this.shooter1.setInverted(true);
+    this.shooter2.setInverted(true);
+    this.shooter3.setInverted(true);
+
+
   }
 
   @Override
@@ -41,10 +52,19 @@ this.shooter2.configOpenloopRamp(.5);
     return NetworkTableInstance.getDefault().getTable("limelight-hounds").getEntry("tx").getDouble(0);
   }
 
-  public void setAllMotors(double speed){
-    shooter1.set(-speed);
-    shooter2.set(-speed);
-    shooter3.set(-speed);
+  public double getRPM(){
+    // Returns the Rate(Ticks Per 50MS)  * EncoderResolution / 60000
+    return (shooter1.getSelectedSensorVelocity() * 2048) / 60000;
+  }
+
+  public void setAllMotorsVoltage(double input){
+    double PIDEffort = shooterPID.calculate(getRPM(), 5000);
+    double FFEffort = shooterFF.calculate(getRPM() * 60);
+    input = input * .99;
+    double restingVal = .01;
+    shooter1.setVoltage(input * (PIDEffort + FFEffort));
+    shooter2.setVoltage(input * (PIDEffort + FFEffort));
+    shooter3.setVoltage(input * (PIDEffort + FFEffort));
   }
 
   public double getYOffset(){

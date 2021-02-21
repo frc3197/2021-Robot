@@ -63,7 +63,7 @@ public final class Constants {
     }
 
     public static enum MotorOutputMultiplier {
-        lifter(.3),intake(-.9),agitator(-1);
+        lifter(.3),intake(-1),agitator(-.8),hood(.2);
 
         public final double multiplier;
         private MotorOutputMultiplier(double multiplier){
@@ -103,6 +103,13 @@ public final static SwerveModuleConstants backLeftConstants = new SwerveModuleCo
 
 
 }
+
+public static final double shooter_P = .744;
+public static final double shooter_D = 0;
+public static final double shooter_kS = .714;
+public static final double shooter_kV = 0.0275;
+public static final double shooter_kA = 0.016;
+
 
 public static final int talonEncoderResolution = 2048;
 public static final double swerveWheelDiam = Units.inchesToMeters(4);

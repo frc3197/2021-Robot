@@ -4,19 +4,20 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.Drive;
-import frc.robot.commands.SetVoltage;
-import frc.robot.commands.beamIncrement;
-import frc.robot.commands.forceShoot;
-import frc.robot.commands.moveHood;
-import frc.robot.commands.runHopper;
-import frc.robot.commands.runIntake;
-import frc.robot.commands.shoot;
+import frc.robot.commands.Mechs.Button.Agitate;
+import frc.robot.commands.Mechs.Button.forceShoot;
+import frc.robot.commands.Mechs.Button.moveHood;
+import frc.robot.commands.Mechs.Button.runIntakeHopper;
+import frc.robot.commands.Mechs.Continuous.Drive;
+import frc.robot.commands.Mechs.Continuous.shoot;
+import frc.robot.commands.Sequential.IntakeAlignDriveSequence;
+import frc.robot.commands.Vision.DriverModeToggle;
+import frc.robot.subsystems.Agitator;
 import frc.robot.subsystems.BeamBreak;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Hopper;
@@ -27,6 +28,7 @@ import frc.robot.subsystems.Drivetrain.SwerveModule;
 
 public class RobotContainer {
 
+  private static Joystick thrustmaster = new Joystick(2);
   private static XboxController driver1 = new XboxController(0);
   private static XboxController driver2 = new XboxController(1);
 
@@ -36,7 +38,12 @@ public class RobotContainer {
   private JoystickButton driver1B = new JoystickButton(driver1, 2);
 
   private JoystickButton driver2RB = new JoystickButton(driver2, 6);
+  private JoystickButton driver2X = new JoystickButton(driver2, 3);
+  private JoystickButton driver2Y = new JoystickButton(driver2, 2);
+  private JoystickButton driver2A = new JoystickButton(driver2, 1);
 
+  private JoystickButton driver1JFwdInt = new JoystickButton(thrustmaster, 1);
+  private JoystickButton driver1JRevInt = new JoystickButton(thrustmaster,5);
 
   public static SwerveModule backLeft = new SwerveModule(Constants.TalonID.kSwerveBLAngle.id,
       Constants.TalonID.kSwerveBLSpeed.id, Constants.CANDevices.kCANCoderBL.id,
@@ -64,6 +71,7 @@ public class RobotContainer {
 
   public static Shooter shooter = new Shooter(Constants.TalonID.kShooter1.id, Constants.TalonID.kShooter3.id,
       Constants.TalonID.kShooter2.id);
+  public static Agitator agitator = new Agitator(Constants.CANSparkMaxID.agitatorMotor.id);
 
   public static DigitalInput beamBreakInp = new DigitalInput(0);
 
@@ -72,17 +80,22 @@ public class RobotContainer {
   public RobotContainer() {
 
     swerveDrive.setDefaultCommand(new Drive(swerveDrive));
-    hopper.setDefaultCommand(new runHopper(hopper));
-    beamBreak.setDefaultCommand(new beamIncrement(beamBreak));
     shooter.setDefaultCommand(new shoot(shooter));
     configureButtonBindings();
 
   }
 
   private void configureButtonBindings() {
-   driver1A.toggleWhenPressed(new runIntake(intake));
+   driver1JFwdInt.whileHeld(new runIntakeHopper(intake,hopper,1));
+   driver1JRevInt.whileHeld(new runIntakeHopper(intake, hopper, -1));
+   driver1X.whenPressed(new IntakeAlignDriveSequence(intake, swerveDrive));
+   driver1X.whenReleased(new DriverModeToggle(false));
+
+
    driver2RB.whileHeld(new forceShoot(hopper));
-   
+   driver2X.whileHeld(new moveHood(hood, -1 * Constants.MotorOutputMultiplier.hood.multiplier));
+   driver2Y.whileHeld(new moveHood(hood,  1 * Constants.MotorOutputMultiplier.hood.multiplier));
+   driver2A.toggleWhenPressed(new Agitate(agitator));
   }
 
 
@@ -90,7 +103,7 @@ public class RobotContainer {
     return driver2.getTriggerAxis(Hand.kRight);
   }
 
-  public static double getXLeft() {
+  public static double getXLeftController() {
     double input = driver1.getX(Hand.kLeft);
     if (input < .125 && input > -.125) {
       return 0;
@@ -99,7 +112,7 @@ public class RobotContainer {
     }
   }
 
-  public static double getYLeft() {
+  public static double getYLeftController() {
     double input = driver1.getY(Hand.kLeft);
     if(input < .075 && input > -.075){
       return 0;
@@ -108,9 +121,37 @@ public class RobotContainer {
     }
   }
 
-  public static double getXRight() {
+  public static double getXRightController() {
 
     double input = driver1.getX(Hand.kRight);
+    if(input < .2 && input > -.2){
+      return 0;
+    } else {
+      return input;
+    }
+  }
+  
+  public static double getXLeftJoystick() {
+    double input = thrustmaster.getX();
+    if (input < .125 && input > -.125) {
+      return 0;
+    } else {
+      return input;
+    }
+  }
+
+  public static double getYLeftJoystick() {
+    double input = thrustmaster.getY();
+    if(input < .075 && input > -.075){
+      return 0;
+    } else {
+      return input;
+    }
+  }
+
+  public static double getXRightJoystick() {
+
+    double input = thrustmaster.getZ();
     if(input < .2 && input > -.2){
       return 0;
     } else {

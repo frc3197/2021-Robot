@@ -18,7 +18,8 @@ public class Intake extends SubsystemBase {
 
   CANSparkMax intakeMotor;
   
-  PhotonCamera camera = new PhotonCamera("intakeCam");
+  static PhotonCamera camera = new PhotonCamera("intakeCam");
+  
   /** Creates a new Intake. */
   public Intake(int intakeID) {
     intakeMotor = new CANSparkMax(intakeID,MotorType.kBrushless);
@@ -29,7 +30,7 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public PhotonCamera getCam(){
+  public static PhotonCamera getCam(){
     return camera;
   }
 

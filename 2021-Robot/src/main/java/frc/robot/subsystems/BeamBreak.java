@@ -5,10 +5,11 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class BeamBreak extends SubsystemBase {
-  DigitalInput input;
+  static DigitalInput input;
   /** Creates a new BeamBreak. */
   public BeamBreak(DigitalInput input) {
     this.input = input;
@@ -16,10 +17,11 @@ public class BeamBreak extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putBoolean("beamBreakCommand", getBeamBreakState());
     // This method will be called once per scheduler run
   }
 
-  public boolean getBeamBreakState(){
+  public static boolean getBeamBreakState(){
     return input.get();
   }
 }

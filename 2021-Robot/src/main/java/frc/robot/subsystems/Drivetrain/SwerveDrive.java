@@ -60,7 +60,6 @@ public void periodic() {
                     ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d())
                     : new ChassisSpeeds(xSpeed, ySpeed, rot));
         SwerveDriveKinematics.normalizeWheelSpeeds(swerveModuleStates, maxSpeed);
-        // TODO: these shud be right but idk we will see
         m_frontLeft.setDesiredState(swerveModuleStates[0]);
         m_frontRight.setDesiredState(swerveModuleStates[1]);
         m_backLeft.setDesiredState(swerveModuleStates[2]);
