@@ -22,20 +22,21 @@ public class intakeAlign extends PIDCommand {
     super(
         // The controller that the command will use
         // TODO: Set Proper Constant Values: Intake PID Align
-        new PIDController(0, 0, 0),
+        new PIDController(.2, 0, 0),
         // This should return the measurement
         intake::getYaw,
         // This should return the setpoint (can also be a constant)
         0,
         // This uses the output
         output -> {
-          swerve.drive(0, 0, output * .3, true);
+          swerve.drive(0, 0, output * -.3, true);
           // Use the output here
         //swerve.driveRoboCentric(0, 0, output * .4);
 
 
 
         });
+      getController().setTolerance(360,360);
       addRequirements(intake, swerve);
       this.intake = intake;
       this.swerve = swerve;
@@ -47,6 +48,7 @@ public class intakeAlign extends PIDCommand {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+
     return false;
   }
 }

@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -13,30 +15,38 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 
-
 public class Intake extends SubsystemBase {
 
   CANSparkMax intakeMotor;
-  
+  PIDController pidController;
   static PhotonCamera camera = new PhotonCamera("intakeCam");
   
   /** Creates a new Intake. */
   public Intake(int intakeID) {
     intakeMotor = new CANSparkMax(intakeID,MotorType.kBrushless);
+    pidController = new PIDController(.0095, 0, 0.001);
+    pidController.setTolerance(5);
   }
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("error", pidController.getPositionError());
+
     // This method will be called once per scheduler run
   }
 
   public static PhotonCamera getCam(){
     return camera;
   }
+  public PIDController getPIDController(){
+    return pidController;
+  }
 
   public void setIntake(double speed){
 
     intakeMotor.set(speed);
+
+
 
   }
 

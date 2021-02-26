@@ -88,6 +88,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    RobotContainer.intake.getCam().setDriverMode(true);
+
     RobotContainer.swerveDrive.resetEncoders();
     RobotContainer.swerveDrive.resetGyro();
 
