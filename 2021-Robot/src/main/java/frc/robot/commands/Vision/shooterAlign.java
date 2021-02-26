@@ -20,26 +20,32 @@ public class shooterAlign extends PIDCommand {
     super(
         // The controller that the command will use
         // TODO: Set Proper Constant Values: Shooter PID Align
-        new PIDController(0, 0, 0), 
+        new PIDController(.0095, 0, 0.001), 
         // This should return the measurement
         shooter::getXOffset,
         // This should return the setpoint (can also be a constant)
         0,
         // This uses the output
         output -> {
-          swerve.drive(0, 0, .3 * output, true);
+          swerve.drive(0, 0, -.1 * output, true);
           // Use the output here
         });
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
     addRequirements(shooter, swerve);
+    getController().setTolerance(3);;
     this.shooter = shooter;
     this.swerve = swerve;
   }
 
-  // Returns true when the command should end.
+  public void end(boolean interrupted) {
+    // TODO Auto-generated method stub
+    swerve.drive(0, 0, 0, true);
+  }
+
   @Override
   public boolean isFinished() {
-    return false;
+    return getController().atSetpoint();
   }
+
 }

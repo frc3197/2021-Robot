@@ -115,5 +115,8 @@ public static final int talonEncoderResolution = 2048;
 public static final double swerveWheelDiam = Units.inchesToMeters(4);
 public static final double swerveDriveMotorGR = 6.86;
 // This could be 6 or 6.2
+public static final double heightOfPP = 83;
+public static final double heightofPPcoT = 91;
+public static final double limelightOffset = 0;
 
 }

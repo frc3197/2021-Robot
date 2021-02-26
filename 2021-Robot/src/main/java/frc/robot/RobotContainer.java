@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -166,6 +169,23 @@ public class RobotContainer {
     } else {
       return input;
     }
+  }
+  public static double getDistanceFromTarget() {
+    double ty = NetworkTableInstance.getDefault().getTable("limelight-hounds").getEntry("ty").getDouble(0);
+    double offset = Units.degreesToRadians(Constants.limelightOffset);
+    ty = Units.degreesToRadians(ty);
+    double limeDistance = Math.abs(Constants.heightOfPP / (Math.tan(ty + offset)));
+    SmartDashboard.putNumber("Distance from Target", limeDistance);
+    if(limeDistance < 280 && limeDistance > 80){
+      SmartDashboard.putBoolean("Inside Shooting Range", true);
+    }else{
+      SmartDashboard.putBoolean("Inside Shooting Range", false);
+    }
+    return limeDistance;
+    // Will have to integrate a variable a1 value once set up for limelight angle.
+  }
+  public static boolean isBetween(int x, int value) {
+    return (value - 5) <= x && x <= (value + 5);
   }
   /*
    * public Command getAutonomousCommand() {

@@ -4,9 +4,12 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
+import frc.robot.ShooterLookupTable;
 
 public class Hood extends SubsystemBase {
   WPI_TalonFX hoodMotor;
@@ -24,4 +27,14 @@ public class Hood extends SubsystemBase {
     hoodMotor.set(speed);
   }
 
+  public void setPosition(double targetPos){
+    hoodMotor.set(ControlMode.Position, targetPos);
+  }
+
+public double getEncoderPosition() {
+	return hoodMotor.getSelectedSensorPosition();
+}
+
+
+  
 }
