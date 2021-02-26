@@ -172,11 +172,11 @@ public class RobotContainer {
   }
   public static double getDistanceFromTarget() {
     double ty = NetworkTableInstance.getDefault().getTable("limelight-hounds").getEntry("ty").getDouble(0);
-    double offset = Units.degreesToRadians(Constants.limelightOffset);
+    double offset = Units.degreesToRadians(Constants.limelightOffsetDegrees);
     ty = Units.degreesToRadians(ty);
     double limeDistance = Math.abs(Constants.heightOfPP / (Math.tan(ty + offset)));
     SmartDashboard.putNumber("Distance from Target", limeDistance);
-    if(limeDistance < 280 && limeDistance > 80){
+    if(limeDistance < 270 && limeDistance > 80){
       SmartDashboard.putBoolean("Inside Shooting Range", true);
     }else{
       SmartDashboard.putBoolean("Inside Shooting Range", false);

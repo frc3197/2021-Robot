@@ -8,7 +8,7 @@ package frc.robot;
 public class ShooterLookupTable {
 
     public static int lookupEncoderTarget(int distance) {
-                if (RobotContainer.isBetween(distance, 5)) {
+        if (RobotContainer.isBetween(distance, 5)) {
             return 0;
         } else if (RobotContainer.isBetween(distance, 15)) {
             return 0;
@@ -59,6 +59,8 @@ public class ShooterLookupTable {
         } else if (RobotContainer.isBetween(distance, 245)) {
             return 0;
         } else if (RobotContainer.isBetween(distance, 255)) {
+            return 0;
+        } else if (RobotContainer.isBetween(distance, 265)) {
             return 0;
         }
 
