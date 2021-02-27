@@ -54,7 +54,8 @@ public class Robot extends TimedRobot {
       SmartDashboard.putNumber("Shooter X Offset (deg)", m_robotContainer.shooter.getXOffset());
       SmartDashboard.putNumber("Shooter Y Offset (deg)", m_robotContainer.shooter.getYOffset());
     }
-
+    SmartDashboard.putNumber("Encoder Ticks", m_robotContainer.hood.getEncoderPosition());
+    m_robotContainer.getDistanceFromTarget();
     CommandScheduler.getInstance().run();
   }
 
