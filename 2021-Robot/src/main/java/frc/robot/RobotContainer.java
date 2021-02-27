@@ -171,7 +171,7 @@ public class RobotContainer {
     }
   }
   public static double getDistanceFromTarget() {
-    double ty = NetworkTableInstance.getDefault().getTable("limelight-killroy").getEntry("ty").getDouble(0);
+    double ty =NetworkTableInstance.getDefault().getTable("limelight-killroy").getEntry("ty").getDouble(0);
     SmartDashboard.putNumber("ty", ty);
     double offset = Units.degreesToRadians(Constants.limelightOffsetDegrees);
     ty = Units.degreesToRadians(ty);
