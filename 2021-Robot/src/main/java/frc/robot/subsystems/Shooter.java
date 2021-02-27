@@ -60,8 +60,6 @@ public class Shooter extends SubsystemBase {
   public void setAllMotorsVoltage(double input){
     double PIDEffort = shooterPID.calculate(getRPM(), 5000);
     double FFEffort = shooterFF.calculate(getRPM() * 60);
-    input = input * .99;
-    double restingVal = .01;
     shooter1.setVoltage(input * (PIDEffort + FFEffort));
     shooter2.setVoltage(input * (PIDEffort + FFEffort));
     shooter3.setVoltage(input * (PIDEffort + FFEffort));

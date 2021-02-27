@@ -177,7 +177,7 @@ public class RobotContainer {
     ty = Units.degreesToRadians(ty);
     double limeDistance = Math.abs(Constants.heightOfPP / (Math.tan(ty + offset)));
     SmartDashboard.putNumber("Distance from Target", limeDistance);
-    if(limeDistance < 270 && limeDistance > 80){
+    if(limeDistance < 270 && limeDistance > 30){
       SmartDashboard.putBoolean("Inside Shooting Range", true);
     }else{
       SmartDashboard.putBoolean("Inside Shooting Range", false);
