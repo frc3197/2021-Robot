@@ -82,23 +82,23 @@ public final class Constants {
 public final static SwerveModuleConstants frontRightConstants = new SwerveModuleConstants
 
 (7, 6, 3, 
-.09,  0.0126346014719 , 0.45, 0.004, // ANGLE MOTOR
+.1,  0.0126346014719 , 0.45, 0.004, // ANGLE MOTOR
  0.2, 0.0181327809871 * 2, 0.005, 0.00); // SPEED MOTOR
 
 public final static SwerveModuleConstants backRightConstants = new SwerveModuleConstants
 (1, 0, 0,
-.09,0.0137420579420 , 0.45, 0.004
+.1,0.0137420579420 , 0.45, 0.004
 , 
  0.2, 0.0210286008586 * 2, 0.005, 0.00);
 
 public final static SwerveModuleConstants frontLeftConstants = new SwerveModuleConstants
 (5, 4, 2,
-.09, 0.0126346014719 , 0.45, 0.004,
+.1, 0.0126346014719 , 0.45, 0.004,
  0.2,0.0181327809871 * 2, 0.005, 0.00);
 
 public final static SwerveModuleConstants backLeftConstants = new SwerveModuleConstants
 (3, 2, 1, 
-.09, 0.0137420579420 , 0.45, 0.004,
+.1, 0.0137420579420 , 0.45, 0.004,
  0.2, 0.0210286008586 * 2, 0.005, 0.0);
 
 
@@ -113,10 +113,13 @@ public static final double shooter_kA = 0.016;
 
 public static final int talonEncoderResolution = 2048;
 public static final double swerveWheelDiam = Units.inchesToMeters(4);
+public static final double swerveWheelCircum = swerveWheelDiam * Math.PI;
 public static final double swerveDriveMotorGR = 6.86;
 // This could be 6 or 6.2
-public static final double heightOfPP = 83;
+public static final double heightOfPP = 97;
 public static final double heightofPPcoT = 91;
-public static final double limelightOffsetDegrees = 18.3;
+public static final double limelightOffsetDegrees = 24.6;
+public static final double heightOfLL = 18;
+public static final double swerveWheelCircumMeters = swerveWheelDiam * Math.PI;
 
 }

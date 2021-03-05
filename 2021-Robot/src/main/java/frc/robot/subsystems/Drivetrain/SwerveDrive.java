@@ -11,10 +11,11 @@ import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Constants;
 
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive implements Subsystem {
-    public static double maxSpeed = Units.feetToMeters(20);
+    public static double maxSpeed = Units.feetToMeters(30);
     public static double maxAngleSpeed = 3*Math.PI;
     
     private double x = Units.inchesToMeters(22 / 2);
@@ -87,6 +88,9 @@ public void periodic() {
         m_frontRight.resetDriveEncoder();
         m_backLeft.resetDriveEncoder();
         m_backRight.resetDriveEncoder();
+    }
+    public SwerveDriveOdometry returnOdometry(){
+        return m_odometry;
     }
 
     public void setVoltageAllMotors(double speed){

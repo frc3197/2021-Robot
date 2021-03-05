@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,6 +15,7 @@ public class Agitator extends SubsystemBase {
   CANSparkMax agitatorMotor;
   public Agitator(int agitatorCANID) {
     agitatorMotor = new CANSparkMax(agitatorCANID,MotorType.kBrushless);
+    agitatorMotor.setIdleMode(IdleMode.kBrake);
   }
 
   @Override

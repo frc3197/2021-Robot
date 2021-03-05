@@ -86,7 +86,7 @@ public class SwerveModule extends SubsystemBase {
     //Pulls the integrated sensor velocity
     double driveUnitsPer100ms = angle_motor.getSelectedSensorVelocity();
     // Converts the encoder rate to meters per second
-    double encoderRate = driveUnitsPer100ms / Constants.talonEncoderResolution * 10 * Constants.swerveWheelDiam * Constants.swerveDriveMotorGR;
+    double encoderRate = driveUnitsPer100ms / Constants.talonEncoderResolution * 10 * Constants.swerveWheelCircumMeters * Constants.swerveDriveMotorGR;
     return encoderRate;
   }
 

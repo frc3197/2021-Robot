@@ -7,20 +7,39 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.ShooterLookupTable;
 
 public class Hood extends SubsystemBase {
+  PIDController pidController;
   WPI_TalonFX hoodMotor;
   /** Creates a new Hood. */
   public Hood(int hoodMotorID) {
+    pidController = new PIDController(.025, 0, 0.002);
+    pidController.setTolerance(100);
+    pidController.setSetpoint(0);
     hoodMotor = new WPI_TalonFX(hoodMotorID);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public boolean getLimitSwitchState(){
+    int hoodMotorState = hoodMotor.getSensorCollection().isRevLimitSwitchClosed();
+    if(hoodMotorState == 0){
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
+
+  public PIDController getPIDController(){
+    return pidController;
   }
 
   public void setHood(double speed){
@@ -33,6 +52,10 @@ public class Hood extends SubsystemBase {
 
 public double getEncoderPosition() {
 	return hoodMotor.getSelectedSensorPosition();
+}
+public void resetEncoder(){
+  hoodMotor.setSelectedSensorPosition(0);
+
 }
 
 

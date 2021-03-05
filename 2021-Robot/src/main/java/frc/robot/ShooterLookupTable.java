@@ -8,64 +8,53 @@ package frc.robot;
 public class ShooterLookupTable {
 
     public static int lookupEncoderTarget(int distance) {
-        if (RobotContainer.isBetween(distance, 5)) {
-            return 0;
-        } else if (RobotContainer.isBetween(distance, 15)) {
-            return 0;
-        } else if (RobotContainer.isBetween(distance, 25)) {
-            return 0;
-        } else if (RobotContainer.isBetween(distance, 35)) {
-            return 0;
-        } else if (RobotContainer.isBetween(distance, 45)) {
-            return 0;
-        } else if (RobotContainer.isBetween(distance, 55)) {
-            return 0;
-        } else if (RobotContainer.isBetween(distance, 65)) {
-            return 0;
-        } else if (RobotContainer.isBetween(distance, 75)) {
-            return 0;
+
+         if (RobotContainer.isBetween(distance, 75)) {
+            return 14000;
         } else if (RobotContainer.isBetween(distance, 85)) {
-            return 0;
+            return 15000;
         } else if (RobotContainer.isBetween(distance, 95)) {
-            return 0;
+            return 18000;
         } else if (RobotContainer.isBetween(distance, 105)) {
-            return 0;
+            return 20000;
         } else if (RobotContainer.isBetween(distance, 115)) {
-            return 0;
+            return 21000;
         } else if (RobotContainer.isBetween(distance, 125)) {
-            return 0;
+            return 22000;
         } else if (RobotContainer.isBetween(distance, 135)) {
-            return 0;
+            return 25000;
         } else if (RobotContainer.isBetween(distance, 145)) {
-            return 0;
+            return 25000;
         } else if (RobotContainer.isBetween(distance, 155)) {
-            return 0;
+            return 26000;
         } else if (RobotContainer.isBetween(distance, 165)) {
-            return 0;
+            return 28000;
         } else if (RobotContainer.isBetween(distance, 175)) {
-            return 0;
+            return 26000;
         } else if (RobotContainer.isBetween(distance, 185)) {
-            return 0;
+            return 28000;
         } else if (RobotContainer.isBetween(distance, 195)) {
-            return 0;
+            return 28700;
         } else if (RobotContainer.isBetween(distance, 205)) {
-            return 0;
+            return 30000;
         } else if (RobotContainer.isBetween(distance, 215)) {
-            return 0;
+            return 27000;
         } else if (RobotContainer.isBetween(distance, 225)) {
-            return 0;
+            return 27400;
         } else if (RobotContainer.isBetween(distance, 235)) {
-            return 0;
+            return 27500;
         } else if (RobotContainer.isBetween(distance, 245)) {
-            return 0;
+            return 26500;
         } else if (RobotContainer.isBetween(distance, 255)) {
-            return 0;
+            return 26300;
         } else if (RobotContainer.isBetween(distance, 265)) {
-            return 0;
+            return 29000;
+        } else if (RobotContainer.isBetween(distance, 275)) {
+            return 28000;
         }
 
         else {
-            return 0;
+            return 14000;
         }
 
     }

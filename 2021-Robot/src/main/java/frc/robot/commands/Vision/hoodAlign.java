@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Vision;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.ShooterLookupTable;
@@ -12,6 +13,7 @@ import frc.robot.subsystems.Shooter;
 
 public class hoodAlign extends CommandBase {
   Hood hood;
+  double output;
   double targetEncoderValue;
   double distanceFromTarget;
   double currentEncoderValue;
@@ -30,9 +32,12 @@ public class hoodAlign extends CommandBase {
   @Override
   public void execute() {
     currentEncoderValue = hood.getEncoderPosition();
+    SmartDashboard.putNumber("encoderValue", currentEncoderValue);
     distanceFromTarget = RobotContainer.getDistanceFromTarget();
     targetEncoderValue = ShooterLookupTable.lookupEncoderTarget((int)distanceFromTarget);
-    hood.setPosition(targetEncoderValue);
+    SmartDashboard.putNumber("aaaaaaa",(targetEncoderValue - currentEncoderValue) * .1 );
+    output = hood.getPIDController().calculate((targetEncoderValue - currentEncoderValue) * .004,0);
+    hood.setHood(-output);
   }
 
   // Called once the command ends or is interrupted.

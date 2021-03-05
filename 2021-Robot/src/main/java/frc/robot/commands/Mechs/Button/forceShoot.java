@@ -10,9 +10,11 @@ import frc.robot.subsystems.Hopper;
 
 public class forceShoot extends CommandBase {
   Hopper hopper;
+  double inputMult;
   /** Creates a new forceShoot. */
-  public forceShoot(Hopper hopper) {
+  public forceShoot(Hopper hopper,double inputMult) {
     this.hopper = hopper;
+    this.inputMult = inputMult;
     addRequirements(hopper);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -24,7 +26,7 @@ public class forceShoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    hopper.sethopperMotor(.85);
+    hopper.sethopperMotor(.85 * inputMult);
   }
 
   // Called once the command ends or is interrupted.
