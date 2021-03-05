@@ -29,7 +29,7 @@ public class shoot extends CommandBase {
     //speed *= .9;
     shooter.setAllMotorsVoltage(speed);
     SmartDashboard.putNumber("RPM OF SHOOTER", shooter.getRPM());
-
+    
   }
 
   // Called once the command ends or is interrupted.

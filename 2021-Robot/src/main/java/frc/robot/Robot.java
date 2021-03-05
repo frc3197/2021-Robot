@@ -7,12 +7,14 @@ package frc.robot;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import frc.robot.commands.Vision.calibrateHood;
 import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Drivetrain.SwerveDrive;
 
 public class Robot extends TimedRobot {
@@ -149,6 +151,10 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    if(m_robotContainer.shooter.getShooterPIDController().atSetpoint()){
+      m_robotContainer.getDriver2().setRumble(RumbleType.kLeftRumble, 1);
+      m_robotContainer.getDriver2().setRumble(RumbleType.kRightRumble, 1); 
+    }
     
     
   }

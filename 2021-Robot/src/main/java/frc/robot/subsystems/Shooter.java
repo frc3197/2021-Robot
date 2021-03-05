@@ -47,6 +47,10 @@ public class Shooter extends SubsystemBase {
     return alignPID;
   }
 
+  public PIDController getShooterPIDController(){
+    return shooterPID;
+  }
+
   public boolean hasTargets(){
     if(NetworkTableInstance.getDefault().getTable("limelight-hounds").getEntry("tv").getDouble(0) == 1){
       return true;
