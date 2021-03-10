@@ -18,21 +18,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.SwerveModuleConstants;
+import frc.robot.Constants.Constants;
+import frc.robot.Constants.SwerveModuleConstants;
 
 public class SwerveModule extends SubsystemBase {
 // Measurments are all done in Meters.
 
 
   private static final double kModuleMaxAngularVelocity = SwerveDrive.maxAngleSpeed;
-  private static final double kModuleMaxAngularAcceleration = Math.pow((8 * Math.PI),2); // radians per second squared
+  private static final double kModuleMaxAngularAcceleration = 20 * Math.PI; // radians per second squared
+
 
   private final WPI_TalonFX speed_motor;
   private final WPI_TalonFX angle_motor;
   
   private SwerveModuleConstants swerveModuleConstants;
   static int numModule = 0;
+  
   final int moduleNumber;
   private final CANCoder encoder;
   private PIDController m_drivePIDController;

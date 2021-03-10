@@ -5,7 +5,7 @@
 package frc.robot.commands.Mechs.Button;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
+import frc.robot.Constants.Constants;
 import frc.robot.subsystems.Agitator;
 
 public class Agitate extends CommandBase {

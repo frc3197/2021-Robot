@@ -4,10 +4,9 @@
 
 package frc.robot.commands.Mechs.Button;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
+import frc.robot.Constants.Constants;
 import frc.robot.subsystems.BeamBreak;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;

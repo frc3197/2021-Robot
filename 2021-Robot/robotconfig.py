@@ -1,27 +1,27 @@
 {
     # Ports for motors
     # If doing drive test, treat this as the left side of the drivetrain
-    "motorPorts": [10,11,12],
+    "motorPorts": [4,2],
     # Only if you are doing drive (leave empty "[]" if not)
-    "rightMotorPorts": [],
+    "rightMotorPorts": [0,6],
     # Class names of motor controllers used.
     # 'WPI_TalonSRX'
     # 'WPI_VictorSPX'
     # 'WPI_TalonFX'
     # If doing drive test, treat this as the left side of the drivetrain
-    "controllerTypes": ["WPI_TalonFX","WPI_TalonFX","WPI_TalonFX"],
+    "controllerTypes": ["WPI_TalonFX","WPI_TalonFX"],
     # Only if you are doing drive (leave empty "[]" if not)
-    "rightControllerTypes": [],
+    "rightControllerTypes": ["WPI_TalonFX","WPI_TalonFX"],
     # Set motors to inverted or not
     # If doing drive test, treat this as the left side of the drivetrain
-    "motorsInverted": [True,True,True],
+    "motorsInverted": [True],
     # Only if you are doing drive (leave empty "[]" if not)
-    "rightMotorsInverted": [],
+    "rightMotorsInverted": [True],
     # Encoder edges-per-revolution (*NOT* cycles per revolution!)
     # For the CTRE Mag Encoder, use 4096 (4 * 1024 = 4096)
-    "encoderEPR": 2048,
+    "encoderEPR": 2048
     # Gearing accounts for the gearing between the encoder and the output shaft
-    "gearing": 1,
+    "gearing": 6.86,
     # Encoder ports (leave empty "[]" if not needed)
     # Specifying encoder ports indicates you want to use Rio-side encoders
     # If doing drive test, treat this as the left side of the drivetrain
@@ -30,12 +30,12 @@
     "rightEncoderPorts": [],
     # Set to True if encoders need to be inverted
     # If doing drive test, treat this as the left side of the drivetrain
-    "encoderInverted": [True,True,True],
+    "encoderInverted": True,
     # Only if you are doing drive (set to False if not needed)
-    "rightEncoderInverted": False,
+    "rightEncoderInverted": True,
     # ** The following is only if you are using a gyro for the DriveTrain test**
     # Gyro type (one of "NavX", "Pigeon", "ADXRS450", "AnalogGyro", or "None")
-    "gyroType": "None",
+    "gyroType": "NavX",
     # Whatever you put into the constructor of your gyro
     # Could be:
     # "SPI.Port.kMXP" (MXP SPI port for NavX or ADXRS450),
@@ -46,7 +46,5 @@
     # "" (NavX using default SPI, ADXRS450 using onboard CS0, or no gyro)
     "gyroPort": "",
 }
-
-
 
 

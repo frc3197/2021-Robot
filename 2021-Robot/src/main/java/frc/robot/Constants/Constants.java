@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot;
+package frc.robot.Constants;
 
 import edu.wpi.first.wpilibj.util.Units;
 
@@ -82,23 +82,23 @@ public final class Constants {
 public final static SwerveModuleConstants frontRightConstants = new SwerveModuleConstants
 
 (7, 6, 3, 
-.1,  0.0126346014719 , 0.45, 0.004, // ANGLE MOTOR
+.12,  0.0126346014719 , 0.45, 0.004, // ANGLE MOTOR
  0.2, 0.0181327809871 * 2, 0.005, 0.00); // SPEED MOTOR
 
 public final static SwerveModuleConstants backRightConstants = new SwerveModuleConstants
 (1, 0, 0,
-.1,0.0137420579420 , 0.45, 0.004
+.12,0.0137420579420 , 0.45, 0.004
 , 
  0.2, 0.0210286008586 * 2, 0.005, 0.00);
 
 public final static SwerveModuleConstants frontLeftConstants = new SwerveModuleConstants
 (5, 4, 2,
-.1, 0.0126346014719 , 0.45, 0.004,
+.12, 0.0126346014719 , 0.45, 0.004,
  0.2,0.0181327809871 * 2, 0.005, 0.00);
 
 public final static SwerveModuleConstants backLeftConstants = new SwerveModuleConstants
 (3, 2, 1, 
-.1, 0.0137420579420 , 0.45, 0.004,
+.12, 0.0137420579420 , 0.45, 0.004,
  0.2, 0.0210286008586 * 2, 0.005, 0.0);
 
 

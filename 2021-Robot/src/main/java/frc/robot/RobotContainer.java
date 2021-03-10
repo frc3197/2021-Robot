@@ -4,16 +4,29 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.Constants;
 import frc.robot.commands.Mechs.Button.Agitate;
 import frc.robot.commands.Mechs.Button.forceShoot;
 import frc.robot.commands.Mechs.Button.moveHood;
@@ -89,7 +102,7 @@ public class RobotContainer {
   public static BeamBreak beamBreak = new BeamBreak(beamBreakInp);
 
   public RobotContainer() {
-    
+
     swerveDrive.setDefaultCommand(new Drive(swerveDrive));
     shooter.setDefaultCommand(new shoot(shooter));
     configureButtonBindings();
@@ -97,27 +110,25 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-   driver1A.toggleWhenPressed(new runIntakeHopper(intake,hopper,1));
-   driver1Start.whileHeld(new runIntakeHopper(intake, hopper, -1));
+    driver1A.toggleWhenPressed(new runIntakeHopper(intake, hopper, 1));
+    driver1Start.whileHeld(new runIntakeHopper(intake, hopper, -1));
 
+    driver1Y.whenPressed(new DriverModeToggle(false));
+    driver1Y.whileHeld(new intakeAlign2(swerveDrive, intake));
+    driver1Y.whenReleased(new DriverModeToggle(true));
 
-   driver1Y.whenPressed(new DriverModeToggle(false));
-   driver1Y.whileHeld(new intakeAlign2(swerveDrive,intake));
-   driver1Y.whenReleased(new DriverModeToggle(true));
+    driver2RB.whileHeld(new forceShoot(hopper, 1));
+    driver2LB.whileHeld(new hoodAlign(hood));
+    driver2Select.whileHeld(new shooterAlign2(shooter, swerveDrive));
 
-   driver2RB.whileHeld(new forceShoot(hopper,1));
-   driver2LB.whileHeld(new hoodAlign(hood));
-   driver2Select.whileHeld(new shooterAlign2(shooter, swerveDrive));
+    driver2Start.whileHeld(new forceShoot(hopper, -1));
+    driver2X.whileHeld(new moveHood(hood, -1 * Constants.MotorOutputMultiplier.hood.multiplier));
+    driver2Y.whileHeld(new moveHood(hood, 1 * Constants.MotorOutputMultiplier.hood.multiplier));
+    driver2A.toggleWhenPressed(new Agitate(agitator));
 
-   driver2Start.whileHeld(new forceShoot(hopper, -1));
-   driver2X.whileHeld(new moveHood(hood, -1 * Constants.MotorOutputMultiplier.hood.multiplier));
-   driver2Y.whileHeld(new moveHood(hood,  1 * Constants.MotorOutputMultiplier.hood.multiplier));
-   driver2A.toggleWhenPressed(new Agitate(agitator));
-   
   }
 
-
-  public static double getRightTriggerD2(){
+  public static double getRightTriggerD2() {
     return driver2.getTriggerAxis(Hand.kRight);
   }
 
@@ -132,7 +143,7 @@ public class RobotContainer {
 
   public static double getYLeftController() {
     double input = driver1.getY(Hand.kLeft);
-    if(input < .075 && input > -.075){
+    if (input < .075 && input > -.075) {
       return 0;
     } else {
       return input;
@@ -142,13 +153,13 @@ public class RobotContainer {
   public static double getXRightController() {
 
     double input = driver1.getX(Hand.kRight);
-    if(input < .1 && input > -.1){
+    if (input < .1 && input > -.1) {
       return 0;
     } else {
       return input;
     }
   }
-  
+
   public static double getXLeftJoystick() {
     double input = thrustmaster.getX();
     if (input < .125 && input > -.125) {
@@ -160,7 +171,7 @@ public class RobotContainer {
 
   public static double getYLeftJoystick() {
     double input = thrustmaster.getY();
-    if(input < .075 && input > -.075){
+    if (input < .075 && input > -.075) {
       return 0;
     } else {
       return input;
@@ -170,12 +181,13 @@ public class RobotContainer {
   public static double getXRightJoystick() {
 
     double input = thrustmaster.getZ();
-    if(input < .2 && input > -.2){
+    if (input < .2 && input > -.2) {
       return 0;
     } else {
       return input;
     }
   }
+
   public static double getDistanceFromTarget() {
     double ty = NetworkTableInstance.getDefault().getTable("limelight-killroy").getEntry("ty").getDouble(0);
     SmartDashboard.putNumber("ty", ty);
@@ -183,34 +195,38 @@ public class RobotContainer {
     ty = Units.degreesToRadians(ty);
     double limeDistance = Math.abs((Constants.heightOfPP - Constants.heightOfLL) / Math.tan(offset + ty));
     SmartDashboard.putNumber("Distance from Target", limeDistance);
-    if(limeDistance < 270 && limeDistance > 30){
+    if (limeDistance < 270 && limeDistance > 30) {
       SmartDashboard.putBoolean("Inside Shooting Range", true);
-    }else{
+    } else {
       SmartDashboard.putBoolean("Inside Shooting Range", false);
     }
     return limeDistance;
     // Will have to integrate a variable a1 value once set up for limelight angle.
   }
 
-  public XboxController getDriver1(){
+  public XboxController getDriver1() {
     return driver1;
   }
 
-  public XboxController getDriver2(){
+  public XboxController getDriver2() {
     return driver2;
   }
+
   public static boolean isBetween(int x, int value) {
     return (value - 5) <= x && x <= (value + 5);
   }
-/*
+
   public Command getSwerveControllerPath(){
     // Create config for trajectory
+    ProfiledPIDController profliedPID = new ProfiledPIDController(AutoConstants.thetaPIDConstants.kP.constant, AutoConstants.thetaPIDConstants.kI.constant, AutoConstants.thetaPIDConstants.kD.constant,
+     new TrapezoidProfile.Constraints(AutoConstants.maxSpeed, AutoConstants.maxAcceleration));
+
+
     TrajectoryConfig config =
         new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                AutoConstants.maxSpeed, AutoConstants.maxAcceleration)
             // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DriveConstants.kDriveKinematics);
+          ;
 
     // An example trajectory to follow.  All units in meters.
     Trajectory exampleTrajectory =
@@ -218,46 +234,31 @@ public class RobotContainer {
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+            List.of(new Translation2d(1, 0)),
             // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(3, 0, new Rotation2d(0)),
+            new Pose2d(2, 0, new Rotation2d(0)),
             config);
 
-    SwerveControllerCommand mecanumControllerCommand =
-        new SwerveControllerCommand(
-            exampleTrajectory,
-            m_robotDrive::getPose,
-            DriveConstants.kFeedforward,
-            DriveConstants.kDriveKinematics,
-
-            // Position contollers
-            new PIDController(AutoConstants.kPXController, 0, 0),
-            new PIDController(AutoConstants.kPYController, 0, 0),
-            new ProfiledPIDController(
-                AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints),
-
-            // Needed for normalizing wheel speeds
-            AutoConstants.kMaxSpeedMetersPerSecond,
-
-            // Velocity PID's
-            new PIDController(DriveConstants.kPFrontLeftVel, 0, 0),
-            new PIDController(DriveConstants.kPRearLeftVel, 0, 0),
-            new PIDController(DriveConstants.kPFrontRightVel, 0, 0),
-            new PIDController(DriveConstants.kPRearRightVel, 0, 0),
-            m_robotDrive::getCurrentWheelSpeeds,
-            m_robotDrive::setDriveSpeedControllersVolts, // Consumer for the output motor voltages
-            m_robotDrive);
+    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+      exampleTrajectory , // Trajectory being used 
+      swerveDrive::getPose, // Supplier for position on the field
+      swerveDrive.getKinematics(), // SwerveKinematics Object
+      new PIDController(AutoConstants.xPIDConstants.kP.constant, AutoConstants.xPIDConstants.kI.constant, AutoConstants.xPIDConstants.kD.constant),  // X Controller
+      new PIDController(AutoConstants.yPIDConstants.kP.constant, AutoConstants.yPIDConstants.kI.constant, AutoConstants.yPIDConstants.kD.constant), // Y Controller
+      profliedPID, // Theta Controller
+      swerveDrive::setModuleStates, // Consumer of swerveModuleStates
+      swerveDrive); // Subsystem Requirements
 
     // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+    swerveDrive.ResetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return mecanumControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+    return swerveControllerCommand.andThen(() -> swerveDrive.drive(0, 0, 0, false));
   }
-  }
-  /*
-   * public Command getAutonomousCommand() {
-   * 
-   * return m_autoCommand; }
-   */
+
+/*
+ * public Command getAutonomousCommand() {
+ * 
+ * return m_autoCommand; }
+ */
 }

@@ -5,7 +5,6 @@
 package frc.robot.commands.Mechs.Button;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.Hopper;
 
 public class forceShoot extends CommandBase {

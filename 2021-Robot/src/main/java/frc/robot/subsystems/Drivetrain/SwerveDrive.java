@@ -3,18 +3,21 @@ package frc.robot.subsystems.Drivetrain;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.SerialPort.Port;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive implements Subsystem {
-    public static double maxSpeed = Units.feetToMeters(30);
-    public static double maxAngleSpeed = 3*Math.PI;
+    public static double maxSpeed = Units.feetToMeters(25);
+    public static double maxAngleSpeed = 6*Math.PI;
     
     private double x = Units.inchesToMeters(22 / 2);
     private double y = Units.inchesToMeters(26.125 / 2);
@@ -66,6 +69,13 @@ public void periodic() {
         m_backLeft.setDesiredState(swerveModuleStates[2]);
         m_backRight.setDesiredState(swerveModuleStates[3]);
       }
+      
+      public void setModuleStates(SwerveModuleState[] swerveModuleStates){
+        m_frontLeft.setDesiredState(swerveModuleStates[0]);
+        m_frontRight.setDesiredState(swerveModuleStates[1]);
+        m_backLeft.setDesiredState(swerveModuleStates[2]);
+        m_backRight.setDesiredState(swerveModuleStates[3]);
+      }
     
 //do things again 
     public void updateOdometry() {
@@ -77,6 +87,14 @@ public void periodic() {
             m_backRight.getState());
       }
 
+      public void resetPose(){}
+      public Pose2d getPose(){
+          return m_odometry.getPoseMeters();
+      }
+
+      public SwerveDriveKinematics getKinematics(){
+          return m_kinematics;
+      }
     public void resetGyro(){
         gyro.reset();
     }
@@ -89,6 +107,10 @@ public void periodic() {
     }
     public SwerveDriveOdometry returnOdometry(){
         return m_odometry;
+    }
+
+    public void ResetOdometry(Pose2d pose){
+        m_odometry.resetPosition(pose, new Rotation2d());
     }
 
     public void setVoltageAllMotors(double speed){

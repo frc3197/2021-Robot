@@ -4,25 +4,20 @@
 
 package frc.robot;
 
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import frc.robot.commands.Vision.calibrateHood;
-import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Drivetrain.SwerveDrive;
 
 public class Robot extends TimedRobot {
-  private boolean calibrated = false;
-  private Command m_autonomousCommand;
   private Command resetHood = new calibrateHood(RobotContainer.hood);
   private RobotContainer m_robotContainer;
 
+  private Command m_autonomousCommand;
   @Override
   public void robotInit() {
 
@@ -31,7 +26,6 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     
     m_robotContainer = new RobotContainer();
-    
     System.out.print(m_robotContainer.hood.getLimitSwitchState());
     
    //m_robotContainer.hood.calibrateEncoderPosition();
@@ -88,6 +82,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    RobotContainer.swerveDrive.ResetOdometry(new Pose2d());
+    m_autonomousCommand = m_robotContainer.getSwerveControllerPath();
+
     /*
     GALACTIC SEARCH CHOOSER
     double gyroAng = RobotContainer.swerveDrive.gyro.getAngle();
@@ -151,9 +148,14 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if(m_robotContainer.shooter.getShooterPIDController().atSetpoint()){
+    if(Shooter.getShooterPIDController().atSetpoint()){
       m_robotContainer.getDriver2().setRumble(RumbleType.kLeftRumble, 1);
       m_robotContainer.getDriver2().setRumble(RumbleType.kRightRumble, 1); 
+    }
+    else{
+      
+      m_robotContainer.getDriver2().setRumble(RumbleType.kLeftRumble, 0);
+      m_robotContainer.getDriver2().setRumble(RumbleType.kRightRumble, 0); 
     }
     
     
