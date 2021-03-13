@@ -219,7 +219,7 @@ public class RobotContainer {
     // Create config for trajectory
     ProfiledPIDController profliedPID = new ProfiledPIDController(AutoConstants.thetaPIDConstants.kP.constant, AutoConstants.thetaPIDConstants.kI.constant, AutoConstants.thetaPIDConstants.kD.constant,
      new TrapezoidProfile.Constraints(AutoConstants.maxAngleSpeed, AutoConstants.maxAngleAcceleration));
-    
+    profliedPID.setTolerance(Units.degreesToRadians(5));
     profliedPID.enableContinuousInput(-Math.PI, Math.PI);
     TrajectoryConfig config =
         new TrajectoryConfig(
