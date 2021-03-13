@@ -47,7 +47,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.VictorSP;
-import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -56,15 +55,15 @@ import java.util.ArrayList;
 
 public class Robot extends TimedRobot {
 
-  static private double ENCODER_EDGES_PER_REV = 2048 / 4.;
+  static private double ENCODER_EDGES_PER_REV = 4096 / 4.;
   static private int PIDIDX = 0;
-  static private int ENCODER_EPR = 2048;
-  static private double GEARING = 6.86;
+  static private int ENCODER_EPR = 4096;
+  static private double GEARING = 1;
   
   private double encoderConstant = (1 / GEARING) * (1 / ENCODER_EDGES_PER_REV);
 
   Joystick stick;
-  DifferentialDrive drive;
+  WPI_TalonFX leaderMotor;
 
 
   Supplier<Double> leftEncoderPosition;
@@ -119,21 +118,8 @@ public class Robot extends TimedRobot {
     switch (side) {
       // setup encoder and data collecting methods
 
-      case RIGHT:
-        // set right side methods = encoder methods
-
-          
-        motor.setSensorPhase(true);
-        rightEncoderPosition = ()
-          -> motor.getSelectedSensorPosition(PIDIDX) * encoderConstant;
-        rightEncoderRate = ()
-          -> motor.getSelectedSensorVelocity(PIDIDX) * encoderConstant *
-               10;
-
-
-        break;
       case LEFT:
-        motor.setSensorPhase(true);
+        motor.setSensorPhase(false);
         
         leftEncoderPosition = ()
           -> motor.getSelectedSensorPosition(PIDIDX) * encoderConstant;
@@ -163,16 +149,12 @@ public class Robot extends TimedRobot {
     stick = new Joystick(0);
     
     // create left motor
-    WPI_TalonFX leftMotor = setupWPI_TalonFX(4, Sides.LEFT, true);
+    WPI_TalonFX leftMotor = setupWPI_TalonFX(1, Sides.LEFT, false);
 
-    WPI_TalonFX leftFollowerID2 = setupWPI_TalonFX(2, Sides.FOLLOWER, true);
-    leftFollowerID2.follow(leftMotor);
 
-    WPI_TalonFX rightMotor = setupWPI_TalonFX(0, Sides.RIGHT, false);
-    WPI_TalonFX rightFollowerID6 = setupWPI_TalonFX(6, Sides.FOLLOWER, false);    
-    rightFollowerID6.follow(rightMotor);
-    drive = new DifferentialDrive(leftMotor, rightMotor);
-    drive.setDeadband(0);
+    rightEncoderPosition = leftEncoderPosition;
+    rightEncoderRate = leftEncoderRate;
+    leaderMotor = leftMotor;
 
     //
     // Configure gyro
@@ -180,8 +162,7 @@ public class Robot extends TimedRobot {
 
     // Note that the angle from the NavX and all implementors of WPILib Gyro
     // must be negated because getAngle returns a clockwise positive angle
-    AHRS navx = new AHRS(Port.kUSB);
-    gyroAngleRadians = () -> -1 * Math.toRadians(navx.getAngle());
+    gyroAngleRadians = () -> 0.0;
 
     // Set the update rate instead of using flush because of a ntcore bug
     // -> probably don't want to do this on a robot in competition
@@ -192,7 +173,7 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     double elapsedTime = Timer.getFPGATimestamp() - startTime;
     System.out.println("Robot disabled");
-    drive.tankDrive(0, 0);
+    leaderMotor.set(0);
     // data processing step
     data = entries.toString();
     data = data.substring(1, data.length() - 1) + ", ";
@@ -223,7 +204,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    drive.arcadeDrive(-stick.getY(), stick.getX());
+    leaderMotor.set(-stick.getY());
   }
 
   @Override
@@ -264,10 +245,7 @@ public class Robot extends TimedRobot {
     priorAutospeed = autospeed;
 
     // command motors to do things
-    drive.tankDrive(
-      (rotateEntry.getBoolean(false) ? -1 : 1) * autospeed, autospeed,
-      false
-    );
+    leaderMotor.set(autospeed);
 
     numberArray[0] = now;
     numberArray[1] = battery;
