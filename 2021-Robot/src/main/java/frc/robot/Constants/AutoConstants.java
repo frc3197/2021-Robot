@@ -4,17 +4,18 @@
 
 package frc.robot.Constants;
 
+import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.subsystems.Drivetrain.SwerveDrive;
 
 /** Add your docs here. */
 public class AutoConstants {
-    public final static double maxSpeed = SwerveDrive.maxSpeed;
-    public final static double maxAcceleration = 0;
+    public final static double maxSpeed = Units.feetToMeters(1);
+    public final static double maxAcceleration = Units.feetToMeters(.5);
 
 
 
     public static enum thetaPIDConstants{
-        kP(0),kI(0),kD(0);
+        kP(.45),kI(0),kD(0.006);
 
 
         public final double constant;
@@ -25,7 +26,7 @@ public class AutoConstants {
     }
 
     public static enum xPIDConstants{
-        kP(3),kI(0),kD(0);
+        kP(1),kI(0),kD(0);
 
 
         public final double constant;
@@ -36,7 +37,7 @@ public class AutoConstants {
     }
 
     public static enum yPIDConstants{
-        kP(3),kI(0),kD(0);
+        kP(1),kI(0),kD(0);
 
 
         public final double constant;

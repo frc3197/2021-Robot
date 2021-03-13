@@ -6,8 +6,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.Vision.calibrateHood;
@@ -43,9 +45,7 @@ public class Robot extends TimedRobot {
    * and SmartDashboard integrated updating.
    */
   @Override
-  @SuppressWarnings({"static-access"})
   public void robotPeriodic() {
-    SmartDashboard.putBoolean("limit hood", RobotContainer.hood.getLimitSwitchState());
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled
     // commands, running already-scheduled commands, removing finished or
@@ -53,17 +53,6 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods. This must be called from the
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
-    SmartDashboard.putNumber("Intake Offset (px)", m_robotContainer.intake.getYaw());
-    SmartDashboard.putNumber("Y Pos", m_robotContainer.swerveDrive.returnOdometry().getPoseMeters().getY());
-    SmartDashboard.putNumber("X Pos", m_robotContainer.swerveDrive.returnOdometry().getPoseMeters().getX());
-    if (m_robotContainer.shooter.hasTargets()) {
-      SmartDashboard.putNumber("Shooter X Offset (deg)", m_robotContainer.shooter.getXOffset());
-      SmartDashboard.putNumber("Shooter Y Offset (deg)", m_robotContainer.shooter.getYOffset());
-    }
-    SmartDashboard.putNumber("Encoder Ticks", m_robotContainer.hood.getEncoderPosition());
-    SmartDashboard.putNumber("Distance", RobotContainer.getDistanceFromTarget());
-    SmartDashboard.putNumber("X", RobotContainer.swerveDrive.returnOdometry().getPoseMeters().getX());
-    SmartDashboard.putNumber("Y", RobotContainer.swerveDrive.returnOdometry().getPoseMeters().getY());
     CommandScheduler.getInstance().run();
   }
 
@@ -82,7 +71,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    RobotContainer.swerveDrive.ResetOdometry(new Pose2d());
     m_autonomousCommand = m_robotContainer.getSwerveControllerPath();
 
     /*
@@ -131,7 +119,7 @@ public class Robot extends TimedRobot {
 
     
     RobotContainer.intake.getCam().setDriverMode(true);
-
+    RobotContainer.swerveDrive.ResetOdometry(new Pose2d(0,0,new Rotation2d(Units.degreesToRadians(180))));
     RobotContainer.swerveDrive.resetEncoders();
     RobotContainer.swerveDrive.resetGyro();
     RobotContainer.hood.resetEncoder();

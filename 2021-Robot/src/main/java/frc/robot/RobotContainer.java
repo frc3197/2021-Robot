@@ -162,7 +162,7 @@ public class RobotContainer {
 
   public static double getXLeftJoystick() {
     double input = thrustmaster.getX();
-    if (input < .125 && input > -.125) {
+    if (input < .175 && input > -.175) {
       return 0;
     } else {
       return input;
@@ -181,7 +181,7 @@ public class RobotContainer {
   public static double getXRightJoystick() {
 
     double input = thrustmaster.getZ();
-    if (input < .2 && input > -.2) {
+    if (input < .1 && input > -.1) {
       return 0;
     } else {
       return input;
@@ -190,7 +190,6 @@ public class RobotContainer {
 
   public static double getDistanceFromTarget() {
     double ty = NetworkTableInstance.getDefault().getTable("limelight-killroy").getEntry("ty").getDouble(0);
-    SmartDashboard.putNumber("ty", ty);
     double offset = Units.degreesToRadians(Constants.limelightOffsetDegrees);
     ty = Units.degreesToRadians(ty);
     double limeDistance = Math.abs((Constants.heightOfPP - Constants.heightOfLL) / Math.tan(offset + ty));
@@ -226,7 +225,7 @@ public class RobotContainer {
         new TrajectoryConfig(
                 AutoConstants.maxSpeed, AutoConstants.maxAcceleration)
             // Add kinematics to ensure max speed is actually obeyed
-          ;
+            .setKinematics(swerveDrive.getKinematics());
 
     // An example trajectory to follow.  All units in meters.
     Trajectory exampleTrajectory =

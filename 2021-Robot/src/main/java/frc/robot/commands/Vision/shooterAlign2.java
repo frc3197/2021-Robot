@@ -33,7 +33,6 @@ public class shooterAlign2 extends CommandBase {
   public void execute() {
     pidController = shooter.getAlignPIDController();
     measurement = shooter.getXOffset();
-    SmartDashboard.putNumber("x offset ll", measurement);
     output = pidController.calculate(measurement, 0);
     swerveDrive.drive(0, 0, output * -.1, true);
     }

@@ -26,7 +26,7 @@ public class SwerveModule extends SubsystemBase {
 
 
   private static final double kModuleMaxAngularVelocity = SwerveDrive.maxAngleSpeed;
-  private static final double kModuleMaxAngularAcceleration = 20 * Math.PI; // radians per second squared
+  private static final double kModuleMaxAngularAcceleration = 22.5 * Math.PI; // radians per second squared
 
 
   private final WPI_TalonFX speed_motor;
@@ -52,7 +52,7 @@ public class SwerveModule extends SubsystemBase {
     this.swerveModuleConstants = swerveModuleConstants;
 
 
-    m_turningPIDController = new ProfiledPIDController(swerveModuleConstants.P_angle,.3, swerveModuleConstants.D_angle,
+    m_turningPIDController = new ProfiledPIDController(swerveModuleConstants.P_angle,0, swerveModuleConstants.D_angle,
       new TrapezoidProfile.Constraints(kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
 
     m_drivePIDController = new PIDController(swerveModuleConstants.P_drive, 0, swerveModuleConstants.D_drive);
@@ -61,8 +61,8 @@ public class SwerveModule extends SubsystemBase {
     m_turnFeedforward = new SimpleMotorFeedforward(swerveModuleConstants.kS_angle,swerveModuleConstants.kV_angle);
     encoder = new CANCoder(encoderID);
   
-    angle_motor.configOpenloopRamp(.05);
-    speed_motor.configOpenloopRamp(.05);
+    angle_motor.configOpenloopRamp(0);
+    speed_motor.configOpenloopRamp(.035);
     angle_motor.setNeutralMode(NeutralMode.Brake);
     speed_motor.setNeutralMode(NeutralMode.Brake);
 
@@ -86,9 +86,10 @@ public class SwerveModule extends SubsystemBase {
 
   public double getSpeedEncoderRate(){
     //Pulls the integrated sensor velocity
-    double driveUnitsPer100ms = angle_motor.getSelectedSensorVelocity();
+    double driveUnitsPer100ms = speed_motor.getSelectedSensorVelocity();
     // Converts the encoder rate to meters per second
     double encoderRate = driveUnitsPer100ms / Constants.talonEncoderResolution * 10 * Constants.swerveWheelCircumMeters * Constants.swerveDriveMotorGR;
+    SmartDashboard.putNumber("SpeedEncoderRate", encoderRate);
     return encoderRate;
   }
 
@@ -137,40 +138,24 @@ public class SwerveModule extends SubsystemBase {
     final double driveOutput =
         m_drivePIDController.calculate(getSpeedEncoderRate(), state.speedMetersPerSecond);
 
-    // Sending PID Effort to SmartDashbboard
-    SmartDashboard.putNumber("swerveModule " + moduleNumber + "/drivePIDEffort" , driveOutput);
 
 
 
     final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
 
-    
-    // Sending FF Effort to SmartDashbboard
-    SmartDashboard.putNumber("swerveModule " + moduleNumber + "/driveFFEffort" , driveFeedforward);
 
 
     // Calculate the turning motor output from the turning PID controller.
     final double turnOutput =
         m_turningPIDController.calculate(getAngleRadians(), state.angle.getRadians());
 
-    // Sending PID Effort to SmartDashbboard
-    SmartDashboard.putNumber("swerveModule " + moduleNumber + "/anglePIDEffort" , turnOutput);
-    SmartDashboard.putNumber("setPointVelocity", m_turningPIDController.getSetpoint().velocity);
-    SmartDashboard.putNumber("actualVelocity", getSpeedEncoderRate());
     final double turnFeedforward =
         m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
-
-    // Sending FF Effort to SmartDashbboard
-    SmartDashboard.putNumber("swerveModule " + moduleNumber + "/angleFFEffort" , turnFeedforward);
-    SmartDashboard.putNumber("Voltage Multiplier" , RobotController.getBatteryVoltage());
-
-    //speed_motor.setVoltage(0);
 
     speed_motor.setVoltage((driveOutput + driveFeedforward) * RobotController.getBatteryVoltage());
 
     //angle_motor.setVoltage(0);
     angle_motor.setVoltage((turnOutput + turnFeedforward) * RobotController.getBatteryVoltage());
-    SmartDashboard.putNumber("Angle Motor Voltage", (turnOutput + turnFeedforward) * RobotController.getBatteryVoltage());
   }
 
 

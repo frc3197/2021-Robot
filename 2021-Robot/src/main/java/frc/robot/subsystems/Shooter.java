@@ -43,8 +43,6 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("VEL ERROR", shooterPID.getVelocityError());
-    SmartDashboard.putNumber("PISS ERROR", shooterPID.getPositionError());
     // This method will be called once per scheduler run
   }
 

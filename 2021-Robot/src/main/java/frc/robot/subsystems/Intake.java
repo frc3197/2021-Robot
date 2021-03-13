@@ -29,7 +29,6 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("error", pidController.getPositionError());
 
     // This method will be called once per scheduler run
   }

@@ -17,7 +17,6 @@ public class BeamBreak extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("beamBreakCommand", getBeamBreakState());
     // This method will be called once per scheduler run
   }
 

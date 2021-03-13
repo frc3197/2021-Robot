@@ -28,10 +28,6 @@ public class SetVoltage extends CommandBase {
   @Override
   public void execute() {
     swerve.setVoltageAllMotors(voltage);
-    SmartDashboard.putNumber("SetVoltage BL", swerve.m_backLeft.getRPM());
-    SmartDashboard.putNumber("SetVoltage BR", swerve.m_backRight.getRPM());
-    SmartDashboard.putNumber("SetVoltage FL", swerve.m_frontLeft.getRPM());
-    SmartDashboard.putNumber("SetVoltage FR", swerve.m_frontRight.getRPM());
 
   }
 

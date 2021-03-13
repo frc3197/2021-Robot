@@ -32,10 +32,8 @@ public class hoodAlign extends CommandBase {
   @Override
   public void execute() {
     currentEncoderValue = hood.getEncoderPosition();
-    SmartDashboard.putNumber("encoderValue", currentEncoderValue);
     distanceFromTarget = RobotContainer.getDistanceFromTarget();
     targetEncoderValue = ShooterLookupTable.lookupEncoderTarget((int)distanceFromTarget);
-    SmartDashboard.putNumber("aaaaaaa",(targetEncoderValue - currentEncoderValue) * .1 );
     output = hood.getPIDController().calculate((targetEncoderValue - currentEncoderValue) * .004,0);
     hood.setHood(-output);
   }

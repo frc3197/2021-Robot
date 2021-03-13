@@ -36,7 +36,6 @@ public class runIntakeHopper extends CommandBase {
   @Override
   public void execute() {
     boolean beamBreak = BeamBreak.getBeamBreakState();
-    SmartDashboard.putBoolean("beamBreak", beamBreak);
     intake.setIntake(input * Constants.MotorOutputMultiplier.intake.multiplier);
     if(beamBreak){
         hopper.sethopperMotor(1 * Constants.MotorOutputMultiplier.lifter.multiplier);

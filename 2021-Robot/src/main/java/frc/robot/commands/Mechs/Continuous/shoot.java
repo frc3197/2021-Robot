@@ -28,7 +28,6 @@ public class shoot extends CommandBase {
     double speed = RobotContainer.getRightTriggerD2();
     //speed *= .9;
     shooter.setAllMotorsVoltage(speed);
-    SmartDashboard.putNumber("RPM OF SHOOTER", shooter.getRPM());
     
   }
 

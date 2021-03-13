@@ -16,7 +16,10 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /** Represents a swerve drive style drivetrain. */
 public class SwerveDrive implements Subsystem {
-    public static double maxSpeed = Units.feetToMeters(25);
+
+    // CHANGE SPEED
+    public static double maxSpeed = Units.feetToMeters(30);
+
     public static double maxAngleSpeed = 6*Math.PI;
     
     private double x = Units.inchesToMeters(22 / 2);
@@ -54,6 +57,9 @@ public void periodic() {
   // This method will be called once per scheduler run
   SmartDashboard.putNumber("gyroVal", gyro.getAngle());
   updateOdometry();
+  SmartDashboard.putNumber("Pose2d X", m_odometry.getPoseMeters().getX());
+  SmartDashboard.putNumber("Pose2d Y", m_odometry.getPoseMeters().getY());  
+
 }
 
     //drive command
@@ -88,6 +94,7 @@ public void periodic() {
       }
 
       public void resetPose(){}
+
       public Pose2d getPose(){
           return m_odometry.getPoseMeters();
       }
