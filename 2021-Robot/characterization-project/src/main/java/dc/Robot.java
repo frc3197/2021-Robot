@@ -47,7 +47,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.VictorSP;
-import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -59,7 +58,7 @@ public class Robot extends TimedRobot {
   static private double ENCODER_EDGES_PER_REV = 2048 / 4.;
   static private int PIDIDX = 0;
   static private int ENCODER_EPR = 2048;
-  static private double GEARING = 6.86;
+  static private double GEARING = 0.14577259475218657;
   
   private double encoderConstant = (1 / GEARING) * (1 / ENCODER_EDGES_PER_REV);
 
@@ -163,13 +162,13 @@ public class Robot extends TimedRobot {
     stick = new Joystick(0);
     
     // create left motor
-    WPI_TalonFX leftMotor = setupWPI_TalonFX(4, Sides.LEFT, true);
+    WPI_TalonFX leftMotor = setupWPI_TalonFX(2, Sides.LEFT, true);
 
-    WPI_TalonFX leftFollowerID2 = setupWPI_TalonFX(2, Sides.FOLLOWER, true);
-    leftFollowerID2.follow(leftMotor);
+    WPI_TalonFX leftFollowerID4 = setupWPI_TalonFX(4, Sides.FOLLOWER, true);
+    leftFollowerID4.follow(leftMotor);
 
-    WPI_TalonFX rightMotor = setupWPI_TalonFX(0, Sides.RIGHT, false);
-    WPI_TalonFX rightFollowerID6 = setupWPI_TalonFX(6, Sides.FOLLOWER, false);    
+    WPI_TalonFX rightMotor = setupWPI_TalonFX(0, Sides.RIGHT, true);
+    WPI_TalonFX rightFollowerID6 = setupWPI_TalonFX(6, Sides.FOLLOWER, true);    
     rightFollowerID6.follow(rightMotor);
     drive = new DifferentialDrive(leftMotor, rightMotor);
     drive.setDeadband(0);
@@ -180,7 +179,7 @@ public class Robot extends TimedRobot {
 
     // Note that the angle from the NavX and all implementors of WPILib Gyro
     // must be negated because getAngle returns a clockwise positive angle
-    AHRS navx = new AHRS(Port.kUSB);
+    AHRS navx = new AHRS(SPI.Port.kMXP);
     gyroAngleRadians = () -> -1 * Math.toRadians(navx.getAngle());
 
     // Set the update rate instead of using flush because of a ntcore bug

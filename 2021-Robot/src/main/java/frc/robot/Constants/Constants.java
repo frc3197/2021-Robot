@@ -74,7 +74,7 @@ public final class Constants {
 
 
     public static class DriveConstants{
-        // Module 1: Speed 0, Angle 1, Encoder 0 - Back Right
+ // Module 1: Speed 0, Angle 1, Encoder 0 - Back Right
 // Module 2: Speed 2, Angle 3, Encoder 1 - Back Left
 // Module 3: Speed 4, Angle 5, Encoder 2 - Front Left
 // Module 4: Speed 6, Angle 7, Encoder 3 - Front Right    

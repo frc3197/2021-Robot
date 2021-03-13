@@ -1,7 +1,7 @@
 {
     # Ports for motors
     # If doing drive test, treat this as the left side of the drivetrain
-    "motorPorts": [4,2],
+    "motorPorts": [2,4],
     # Only if you are doing drive (leave empty "[]" if not)
     "rightMotorPorts": [0,6],
     # Class names of motor controllers used.
@@ -19,9 +19,9 @@
     "rightMotorsInverted": [True],
     # Encoder edges-per-revolution (*NOT* cycles per revolution!)
     # For the CTRE Mag Encoder, use 4096 (4 * 1024 = 4096)
-    "encoderEPR": 2048
+    "encoderEPR": 2048,
     # Gearing accounts for the gearing between the encoder and the output shaft
-    "gearing": 6.86,
+    "gearing": 0.14577259475218657,
     # Encoder ports (leave empty "[]" if not needed)
     # Specifying encoder ports indicates you want to use Rio-side encoders
     # If doing drive test, treat this as the left side of the drivetrain
@@ -44,7 +44,6 @@
     # "0" (Pigeon CAN ID or AnalogGyro channel),
     # "new WPI_TalonSRX(3)" (Pigeon on a Talon SRX),
     # "" (NavX using default SPI, ADXRS450 using onboard CS0, or no gyro)
-    "gyroPort": "",
+    "gyroPort": "SPI.Port.kMXP",
 }
-
 
