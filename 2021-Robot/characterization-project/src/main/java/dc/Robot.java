@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
   static private double ENCODER_EDGES_PER_REV = 2048 / 4.;
   static private int PIDIDX = 0;
   static private int ENCODER_EPR = 2048;
-  static private double GEARING = 0.14577259475218657;
+  static private double GEARING = 6.86;
   
   private double encoderConstant = (1 / GEARING) * (1 / ENCODER_EDGES_PER_REV);
 
@@ -122,11 +122,11 @@ public class Robot extends TimedRobot {
         // set right side methods = encoder methods
 
           
-        motor.setSensorPhase(true);
+        motor.setSensorPhase(false);
         rightEncoderPosition = ()
-          -> motor.getSelectedSensorPosition(PIDIDX) * encoderConstant;
+          -> -motor.getSelectedSensorPosition(PIDIDX) * encoderConstant;
         rightEncoderRate = ()
-          -> motor.getSelectedSensorVelocity(PIDIDX) * encoderConstant *
+          -> -motor.getSelectedSensorVelocity(PIDIDX) * encoderConstant *
                10;
 
 
@@ -162,13 +162,13 @@ public class Robot extends TimedRobot {
     stick = new Joystick(0);
     
     // create left motor
-    WPI_TalonFX leftMotor = setupWPI_TalonFX(2, Sides.LEFT, true);
+    WPI_TalonFX leftMotor = setupWPI_TalonFX(2, Sides.LEFT, false);
 
-    WPI_TalonFX leftFollowerID4 = setupWPI_TalonFX(4, Sides.FOLLOWER, true);
+    WPI_TalonFX leftFollowerID4 = setupWPI_TalonFX(4, Sides.FOLLOWER, false);
     leftFollowerID4.follow(leftMotor);
 
-    WPI_TalonFX rightMotor = setupWPI_TalonFX(0, Sides.RIGHT, true);
-    WPI_TalonFX rightFollowerID6 = setupWPI_TalonFX(6, Sides.FOLLOWER, true);    
+    WPI_TalonFX rightMotor = setupWPI_TalonFX(0, Sides.RIGHT, false);
+    WPI_TalonFX rightFollowerID6 = setupWPI_TalonFX(6, Sides.FOLLOWER, false);    
     rightFollowerID6.follow(rightMotor);
     drive = new DifferentialDrive(leftMotor, rightMotor);
     drive.setDeadband(0);
