@@ -14,8 +14,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.Vision.calibrateHood;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Drivetrain.SwerveDrive;
 
 public class Robot extends TimedRobot {
+  private static double autoStartingGyro;
   private Command resetHood = new calibrateHood(RobotContainer.hood);
   private RobotContainer m_robotContainer;
 
@@ -71,7 +73,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    autoStartingGyro = SwerveDrive.gyro.getAngle();
     m_autonomousCommand = m_robotContainer.getSwerveControllerPath();
+
 
     /*
     GALACTIC SEARCH CHOOSER
