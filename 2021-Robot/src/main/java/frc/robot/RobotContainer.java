@@ -219,7 +219,7 @@ public class RobotContainer {
     // Create config for trajectory
     ProfiledPIDController profliedPID = new ProfiledPIDController(AutoConstants.thetaPIDConstants.kP.constant, AutoConstants.thetaPIDConstants.kI.constant, AutoConstants.thetaPIDConstants.kD.constant,
      new TrapezoidProfile.Constraints(AutoConstants.maxAngleSpeed, AutoConstants.maxAngleAcceleration));
-    profliedPID.setTolerance(Units.degreesToRadians(0));
+    profliedPID.setTolerance(Units.degreesToRadians(3));
     profliedPID.enableContinuousInput(-Math.PI, Math.PI);
     TrajectoryConfig config =
         new TrajectoryConfig(
@@ -228,18 +228,10 @@ public class RobotContainer {
             .setKinematics(swerveDrive.getKinematics());
 
     // An example trajectory to follow.  All units in meters.
-    Trajectory exampleTrajectory =
-        TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(.5, 0),new Translation2d(1, 0),new Translation2d(1.5, 0)),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(2, 0, new Rotation2d(0)),
-            config);
+    Trajectory trajectory = new Trajectory();
 
     SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-      exampleTrajectory , // Trajectory being used 
+      trajectory , // Trajectory being used 
       swerveDrive::getPose, // Supplier for position on the field
       swerveDrive.getKinematics(), // SwerveKinematics Object
       new PIDController(AutoConstants.xPIDConstants.kP.constant, AutoConstants.xPIDConstants.kI.constant, AutoConstants.xPIDConstants.kD.constant),  // X Controller
@@ -249,7 +241,7 @@ public class RobotContainer {
       swerveDrive); // Subsystem Requirements
 
     // Reset odometry to the starting pose of the trajectory.
-    swerveDrive.ResetOdometry(exampleTrajectory.getInitialPose());
+    swerveDrive.ResetOdometry(trajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> swerveDrive.drive(0, 0, 0, false));
