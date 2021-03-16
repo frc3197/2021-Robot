@@ -51,6 +51,8 @@ public class SwerveModule extends SubsystemBase {
     speed_motor = new WPI_TalonFX(speedMotor);
     this.swerveModuleConstants = swerveModuleConstants;
 
+    speed_motor.configFactoryDefault();
+    angle_motor.configFactoryDefault();
 
     m_turningPIDController = new ProfiledPIDController(swerveModuleConstants.P_angle,0, swerveModuleConstants.D_angle,
       new TrapezoidProfile.Constraints(kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));

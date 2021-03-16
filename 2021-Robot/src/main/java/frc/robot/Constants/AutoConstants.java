@@ -11,13 +11,13 @@ import frc.robot.subsystems.Drivetrain.SwerveDrive;
 public class AutoConstants {
     public final static double maxSpeed = Units.feetToMeters(25);
     public final static double maxAcceleration = Units.feetToMeters(1);
-    public final static double maxAngleSpeed = 6 * Math.PI;    
+    public final static double maxAngleSpeed = 10 * Math.PI;    
     public final static double maxAngleAcceleration = 5 * Math.PI;
 
 
     public static enum thetaPIDConstants{
         // .45 , 0 , .006
-        kP(.375),kI(0),kD(0.006);
+        kP(2.5),kI(0.01),kD(0.3);
 
 
         public final double constant;
@@ -28,7 +28,7 @@ public class AutoConstants {
     }
 
     public static enum xPIDConstants{
-        kP(.1),kI(0),kD(0);
+        kP(5),kI(0.001),kD(0.005);
 
 
         public final double constant;
@@ -39,7 +39,7 @@ public class AutoConstants {
     }
 
     public static enum yPIDConstants{
-        kP(.1),kI(0),kD(0);
+        kP(5),kI(0.001),kD(0.005);
 
 
         public final double constant;
