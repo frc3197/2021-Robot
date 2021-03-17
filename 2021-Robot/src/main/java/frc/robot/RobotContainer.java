@@ -4,29 +4,19 @@
 
 package frc.robot;
 
-import java.util.List;
-
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.Constants;
+import frc.robot.commands.Auto.DriveForward;
+import frc.robot.commands.Auto.TurnAngle;
+import frc.robot.commands.Auto.bluePathLogic;
 import frc.robot.commands.Mechs.Button.Agitate;
 import frc.robot.commands.Mechs.Button.forceShoot;
 import frc.robot.commands.Mechs.Button.moveHood;
@@ -68,6 +58,7 @@ public class RobotContainer {
 
   private JoystickButton driver1JFwdInt = new JoystickButton(thrustmaster, 1);
   private JoystickButton driver1JRevInt = new JoystickButton(thrustmaster, 5);
+  private TrajectoryLookupTable trajectoryLookupTable = new TrajectoryLookupTable(swerveDrive);
 
   public static SwerveModule backLeft = new SwerveModule(Constants.TalonID.kSwerveBLAngle.id,
       Constants.TalonID.kSwerveBLSpeed.id, Constants.CANDevices.kCANCoderBL.id,
@@ -215,36 +206,45 @@ public class RobotContainer {
     return (value - 5) <= x && x <= (value + 5);
   }
 
-  public Command getSwerveControllerPath(){
-    // Create config for trajectory
-    ProfiledPIDController profliedPID = new ProfiledPIDController(AutoConstants.thetaPIDConstants.kP.constant, AutoConstants.thetaPIDConstants.kI.constant, AutoConstants.thetaPIDConstants.kD.constant,
-     new TrapezoidProfile.Constraints(AutoConstants.maxAngleSpeed, AutoConstants.maxAngleAcceleration));
-    profliedPID.setTolerance(Units.degreesToRadians(3));
-    profliedPID.enableContinuousInput(-Math.PI, Math.PI);
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                AutoConstants.maxSpeed, AutoConstants.maxAcceleration)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(swerveDrive.getKinematics());
+  public SequentialCommandGroup getSwerveControllerPath() {
 
-    // An example trajectory to follow.  All units in meters.
-    Trajectory trajectory = new Trajectory();
+    // Starting RED
+    if (Robot.autoStartingGyro > -20 || Robot.autoStartingGyro < 20) {
 
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-      trajectory , // Trajectory being used 
-      swerveDrive::getPose, // Supplier for position on the field
-      swerveDrive.getKinematics(), // SwerveKinematics Object
-      new PIDController(AutoConstants.xPIDConstants.kP.constant, AutoConstants.xPIDConstants.kI.constant, AutoConstants.xPIDConstants.kD.constant),  // X Controller
-      new PIDController(AutoConstants.yPIDConstants.kP.constant, AutoConstants.yPIDConstants.kI.constant, AutoConstants.yPIDConstants.kD.constant), // Y Controller
-      profliedPID, // Theta Controller
-      swerveDrive::setModuleStates, // Consumer of swerveModuleStates
-      swerveDrive); // Subsystem Requirements
+      // Straight Ahead is RED B
+      if (Intake.getCam().getLatestResult().getBestTarget().getYaw() > -10
+          || Intake.getCam().getLatestResult().getBestTarget().getYaw() < 10) {
+        return trajectoryLookupTable.getRED_B();
+      }
 
-    // Reset odometry to the starting pose of the trajectory.
-    swerveDrive.ResetOdometry(trajectory.getInitialPose());
+      else if (Intake.getCam().getLatestResult().getBestTarget().getYaw() < -35
+          || Intake.getCam().getLatestResult().getBestTarget().getYaw() > -55) {
+        return trajectoryLookupTable.getRED_A();
+      } else {
+        return null;
+      }
 
-    // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> swerveDrive.drive(0, 0, 0, false));
+    }
+
+    // Starting BLUE
+    else if (Robot.autoStartingGyro > 60 || Robot.autoStartingGyro < 120) {
+      return new SequentialCommandGroup(new TurnAngle(90, swerveDrive),
+          new DriveForward(Units.inchesToMeters(120),swerveDrive), new bluePathLogic(trajectoryLookupTable)
+    
+    );
+    }
+    else{
+      return null;
+    }
+
+
+
+
+
+  
+
+
+
   }
 
 /*

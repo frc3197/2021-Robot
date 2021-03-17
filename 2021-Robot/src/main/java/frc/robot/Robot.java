@@ -17,7 +17,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Drivetrain.SwerveDrive;
 
 public class Robot extends TimedRobot {
-  private static double autoStartingGyro;
+  public static double autoStartingGyro = 0;
   private Command resetHood = new calibrateHood(RobotContainer.hood);
   private RobotContainer m_robotContainer;
 
